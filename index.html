@@ -56,8 +56,9 @@ a{color:inherit}
 .mapbtn:hover{background:var(--tab)}
 @media (max-width:620px){.brand span{display:none}.shelf .bdg{width:22px;height:22px}.mapbtn span{display:none}}
 
-main{padding-block:22px 56px}
-.view{display:grid;gap:22px}
+main{padding-block:14px 40px}
+.view{display:grid;gap:14px}
+#v-map{gap:22px}
 
 /* ── 배지 ── */
 .bdg{display:inline-block;color:var(--lock)}
@@ -117,32 +118,36 @@ td.min{white-space:nowrap;font-variant-numeric:tabular-nums}
 .chip{display:inline-block;font-size:12px;letter-spacing:.12em;font-weight:700;color:#fff;background:var(--cc);padding:3px 10px 2px;border-radius:999px}
 :root[data-theme="dark"] .chip{color:#121518}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip{color:#121518}}
-.chap-head h2{font-size:clamp(30px,4.6vw,42px)}
+.chap-head > div:first-child{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap}
+.chap-head h2{font-size:clamp(26px,3.4vw,34px)}
 .chap-head .sub{color:var(--muted);font-size:15px}
 .pips{margin-left:auto;display:flex;gap:6px;align-items:center;font-family:var(--font-hand);font-weight:700;font-size:19px}
 .pips i{width:14px;height:14px;border-radius:50%;border:2px solid var(--cc);display:inline-block}
 .pips i.on{background:var(--cc)}
 
-.dialog{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start;background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:14px 16px;box-shadow:5px 5px 0 color-mix(in srgb,var(--ink) 85%,transparent);position:relative}
-.dialog .por{width:76px;height:76px}
+.dialog{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:8px 14px;box-shadow:4px 4px 0 color-mix(in srgb,var(--ink) 85%,transparent);position:relative}
+.dialog .por{width:56px;height:56px}
 .por{border-radius:50%;background:var(--portrait);border:2px solid var(--ink);overflow:hidden;flex:none}
 .por svg{width:100%;height:100%;display:block}
-.dialog .who{font-family:var(--font-hand);font-weight:700;font-size:20px;color:var(--cc);line-height:1.1}
+.dialog .who{font-family:var(--font-hand);font-weight:700;font-size:18px;color:var(--cc);line-height:1.1}
 .dialog .who.pen{color:var(--muted)}
-.dialog .txt{font-family:var(--font-hand);font-size:23px;line-height:1.4;min-height:2.8em;margin-top:2px}
+.dialog .txt{font-family:var(--font-hand);font-size:21px;line-height:1.35;min-height:2.7em;margin-top:0;padding-right:70px}
 .dialog .txt b{background:linear-gradient(transparent 60%,color-mix(in srgb,var(--mark) 70%,transparent) 60%)}
 .dialog .next{position:absolute;right:14px;bottom:10px;border:0;background:var(--ink);color:var(--paper);border-radius:999px;padding:3px 12px 2px;font-family:var(--font-hand);font-weight:700;font-size:18px;cursor:pointer}
 .dialog .next[hidden]{display:none}
 .dialog .next::after{content:" ▶";display:inline-block;animation:blink 1s steps(2) infinite}
 @keyframes blink{50%{opacity:.2}}
-@media (max-width:620px){.dialog .por{width:54px;height:54px}.dialog .txt{font-size:20px;padding-bottom:26px}}
+@media (max-width:620px){.dialog .por{width:46px;height:46px}.dialog .txt{font-size:19px;padding-right:0;padding-bottom:26px}}
 
 .stage{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:22px;align-items:start}
 @media (max-width:900px){.stage{grid-template-columns:minmax(0,1fr)}}
-.board{background:var(--paper);border-radius:6px;box-shadow:var(--shadow);position:relative;overflow:hidden;border:1px solid var(--line)}
-.board canvas{display:block;width:100%;aspect-ratio:4/3;max-width:100%;touch-action:none}
-.board-foot{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:12px 14px;border-top:1px dashed var(--line)}
-.side{display:grid;gap:14px;min-width:0;align-content:start}
+.board{background:var(--paper);border-radius:6px;box-shadow:var(--shadow);position:relative;overflow:clip;border:1px solid var(--line);container-type:inline-size}
+.board canvas{display:block;width:100%;max-width:100%;height:clamp(230px,calc(100vh - 300px),75cqw);height:clamp(230px,calc(100dvh - 300px),75cqw);touch-action:none}
+.board-foot{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:8px 12px;border-top:1px dashed var(--line)}
+.board-head{border-top:0;border-bottom:1px dashed var(--line);justify-content:space-between;position:sticky;top:calc(env(safe-area-inset-top,0px) + 62px);z-index:4;background:var(--paper)}
+.stepno{font-family:var(--font-hand);font-weight:700;font-size:19px;font-variant-numeric:tabular-nums;min-width:3.2em;text-align:center}
+.side{display:grid;gap:12px;min-width:0;align-content:start}
+@media (min-width:901px){.stage .side{max-height:calc(100svh - 245px);overflow-y:auto;padding-right:6px;scrollbar-width:thin}}
 .side h3{font-size:23px}
 .obs{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:15px}
 .obs::before{content:"관찰 메모";display:block;font-family:var(--font-hand);font-weight:700;font-size:17px;color:var(--vp);margin-bottom:2px}
@@ -204,8 +209,8 @@ td.min{white-space:nowrap;font-variant-numeric:tabular-nums}
 .steps button.cur{background:var(--card);color:var(--ink);box-shadow:0 0 0 1.5px var(--ink)}
 .steps button.cur::before{background:var(--mark);border-color:#1f242a;color:#1f242a}
 .steps button:focus-visible{outline:3px solid var(--guide)}
-.stepcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:8px}
-.stepcard h3{font-size:25px}
+.stepcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:grid;gap:6px}
+.stepcard h3{font-size:23px}
 .tip{font-size:14.5px;color:var(--muted);border-left:3px solid var(--mark);padding-left:10px}
 
 /* game */
@@ -226,6 +231,15 @@ td.min{white-space:nowrap;font-variant-numeric:tabular-nums}
 .padwrap{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:22px;align-items:start}
 @media (max-width:900px){.padwrap{grid-template-columns:minmax(0,1fr)}}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
+.guidebox{display:grid;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.gb-head{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--font-hand);font-size:22px}
+.exthumb{position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper)}
+.exthumb canvas{display:block;width:100%;aspect-ratio:16/10;height:auto}
+.exthumb span{position:absolute;left:8px;top:6px;font-size:12px;font-weight:700;color:var(--muted);background:var(--paper);padding:0 6px;border-radius:6px}
+.gsteps{margin:0;padding-left:1.4em;display:grid;gap:4px;font-size:14.5px;color:var(--muted)}
+.gsteps li{cursor:pointer;padding:2px 4px;border-radius:6px}
+.gsteps li.past{color:var(--ink)}
+.gsteps li.cur{color:var(--ink);background:color-mix(in srgb,var(--mark) 35%,transparent);font-weight:700}
 
 /* modal & toast */
 .modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:color-mix(in srgb,var(--desk) 70%,transparent);backdrop-filter:blur(3px);padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
@@ -361,11 +375,11 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
   <div class="dialog" data-ch="4"></div>
   <div class="stage">
     <div class="board">
-      <canvas id="cvRoom" aria-label="스케치를 단계별로 그리는 그림"></canvas>
-      <div class="board-foot">
-        <div class="row"><button class="btn" id="roomPrev" type="button">이전</button><button class="btn primary" id="roomNext" type="button">다음 단계</button><button class="btn" id="roomReplay" type="button">다시 그리기</button></div>
-        <label class="ctl" for="roomGuide"><input type="checkbox" id="roomGuide" checked> 연필 가이드선 보기</label>
+      <div class="board-foot board-head">
+        <div class="row"><button class="btn" id="roomPrev" type="button">◀ 이전</button><span class="stepno" id="roomNo">1 / 8</span><button class="btn primary" id="roomNext" type="button">다음 단계 ▶</button><button class="btn" id="roomReplay" type="button">다시 그리기</button></div>
+        <label class="ctl" for="roomGuide"><input type="checkbox" id="roomGuide" checked> 연필 가이드선</label>
       </div>
+      <canvas id="cvRoom" aria-label="스케치를 단계별로 그리는 그림"></canvas>
     </div>
     <aside class="side">
       <div class="mhead"><h3>무엇을 그릴까?</h3></div>
@@ -444,7 +458,13 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
         <button class="btn" type="button" data-ch="name">입체 이름 글자 · 1점</button>
         <button class="btn" type="button" data-ch="street">골목길 건물 · 2점</button>
       </div>
-      <p class="tip" id="padTip">도전 과제를 고르면 그리는 순서를 알려 줘요.</p>
+      <div class="guidebox" id="guidebox">
+        <div class="gb-head"><b id="gTitle"></b><span class="stepno" id="gNo"></span></div>
+        <div class="exthumb"><canvas id="cvEx" aria-label="완성 예시 그림"></canvas><span>완성 예시</span></div>
+        <ol class="gsteps" id="gSteps"></ol>
+        <div class="row"><button class="btn" id="gPrev" type="button">◀ 이전</button><button class="btn primary" id="gNext" type="button">다음 단계 ▶</button><label class="ctl" for="gShow"><input type="checkbox" id="gShow" checked> 그림판에 가이드 겹쳐 보기</label></div>
+        <p class="tip">그림판의 <b style="color:var(--vp)">빨간 점선</b>이 지금 단계, 파란 점선이 앞 단계예요. 투시 자로 점선 위를 따라 그어 보세요.</p>
+      </div>
     </aside>
   </div>
 </section>
@@ -883,13 +903,14 @@ function finishScene(){const d=S.done[4];const sc=R.scene;const first=!d[sc];if(
 function sceneStars(){['room','land'].forEach(k=>{const el=$(`[data-star="${k}"]`);if(el)el.textContent=S.done[4][k]?'· ★ 완성':'';});}
 function roomUI(){const steps=SCENES[R.scene].steps;const s=steps[R.step];$('#roomTitle').textContent=`${R.step+1}. ${s.t}`;$('#roomDesc').innerHTML=s.d;$('#roomTip').textContent=s.tip;
   $$('#roomSteps button').forEach((b,i)=>{b.classList.toggle('cur',i===R.step);b.classList.toggle('past',i<R.step);b.setAttribute('aria-current',i===R.step?'step':'false');});
-  $('#roomPrev').disabled=R.step===0;$('#roomNext').textContent=R.step===steps.length-1?'처음부터':'다음 단계';
+  $('#roomPrev').disabled=R.step===0;$('#roomNext').textContent=R.step===steps.length-1?'처음부터 ↺':'다음 단계 ▶';$('#roomNo').textContent=`${R.step+1} / ${steps.length}`;
   $$('[data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scene===R.scene)));}
 function buildSteps(){$('#roomSteps').innerHTML=SCENES[R.scene].steps.map((s,i)=>`<li><button type="button" data-i="${i}">${s.t}</button></li>`).join('');$$('#roomSteps button').forEach(b=>b.addEventListener('click',()=>{R.step=+b.dataset.i;roomUI();playRoom();}));}
 $$('[data-scene]').forEach(b=>b.addEventListener('click',()=>{if(R.scene===b.dataset.scene)return;R.scene=b.dataset.scene;R.step=0;R.cache=null;buildSteps();roomUI();playRoom();}));
 $('#roomNext').addEventListener('click',()=>{const n=SCENES[R.scene].steps.length;R.step=R.step===n-1?0:R.step+1;roomUI();playRoom();});
 $('#roomPrev').addEventListener('click',()=>{if(R.step>0){R.step--;roomUI();cancelAnimationFrame(R.anim);R.prog=1;drawRoom();}});
 $('#roomReplay').addEventListener('click',()=>playRoom());
+document.addEventListener('keydown',e=>{if(current!=='ch4'||!$('#clearModal').hidden||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;if(e.key==='ArrowRight'){e.preventDefault();$('#roomNext').click();}else if(e.key==='ArrowLeft'){e.preventDefault();$('#roomPrev').click();}});
 $('#roomGuide').addEventListener('change',e=>{R.guide=e.target.checked;drawRoom();});
 buildSteps();roomUI();
 
@@ -919,12 +940,12 @@ $('#gameNext').addEventListener('click',()=>{if(G.over){G.i=0;G.total=0;G.seed+=
 $('#certName').value=S.name||'';$('#certName').addEventListener('input',e=>{S.name=e.target.value;save();});
 $('#certDate').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
 const D={mode:1,vps:[[.5,.4]],lines:[],tool:'ruler',guide:true,cur:null,drag:null};
-D.lines=[{kind:'ruler',pts:[[.18,.14],[.18,.86]]},{kind:'ruler',pts:[[.18,.14],[.5*.64+.18*.36,.4*.64+.14*.36]]},{kind:'ruler',pts:[[.18,.86],[.5*.64+.18*.36,.4*.64+.86*.36]]}];
 function padSnap(S0,P,W,H){const d=[P[0]-S0[0],P[1]-S0[1]];const Lg=Math.hypot(d[0],d[1]);if(Lg<2)return{end:S0,dir:null};const cands=[];D.vps.forEach(v=>{const vp=[v[0]*W,v[1]*H];const u=[vp[0]-S0[0],vp[1]-S0[1]];const ul=Math.hypot(u[0],u[1]);if(ul>8)cands.push([u[0]/ul,u[1]/ul]);});cands.push([0,1]);if(D.mode===1)cands.push([1,0]);
   let best=null,bs=-1;cands.forEach(u=>{const c=Math.abs(d[0]*u[0]+d[1]*u[1])/Lg;if(c>bs){bs=c;best=u;}});const pr=d[0]*best[0]+d[1]*best[1];return{end:[S0[0]+best[0]*pr,S0[1]+best[1]*pr],dir:best};}
 function drawPad(){const cv=$('#cvPad');const {ctx,W,H}=fit(cv);if(W<20)return;paper(ctx,W,H);const vps=D.vps.map(v=>[v[0]*W,v[1]*H]);const hy=vps[0][1];
   if(D.guide){ctx.save();ctx.lineWidth=1;vps.forEach((v,k)=>{ctx.strokeStyle=k?COL.guide2:COL.guide;ctx.globalAlpha=.22;for(let a=0;a<360;a+=10){const r=a*Math.PI/180;seg(ctx,v,[v[0]+Math.cos(r)*3000,v[1]+Math.sin(r)*3000]);}});ctx.restore();}
   ctx.strokeStyle=COL.guide;ctx.lineWidth=1.6;ctx.globalAlpha=.9;seg(ctx,[0,hy],[W,hy]);ctx.globalAlpha=1;
+  drawGhost(ctx,W,H);
   const all=D.lines.concat(D.cur?[D.cur]:[]);ctx.lineCap='round';ctx.lineJoin='round';all.forEach(l=>{ctx.strokeStyle=COL.ink;ctx.lineWidth=l.kind==='free'?1.8:2.2;poly(ctx,l.pts.map(p=>[p[0]*W,p[1]*H]));ctx.stroke();});
   if(D.cur&&D.cur.kind==='ruler'&&D.cur.dir){const s=[D.cur.pts[0][0]*W,D.cur.pts[0][1]*H];ctx.save();ctx.strokeStyle=COL.vp;ctx.globalAlpha=.5;ctx.setLineDash([4,6]);ctx.lineWidth=1.2;seg(ctx,[s[0]-D.cur.dir[0]*3000,s[1]-D.cur.dir[1]*3000],[s[0]+D.cur.dir[0]*3000,s[1]+D.cur.dir[1]*3000]);ctx.restore();}
   vps.forEach((v,k)=>vpMark(ctx,v,D.mode===2?(k?'②':'①'):null,COL.vp,{dx:k?-10:10,dy:-20,align:k?'right':'left'}));}
@@ -935,13 +956,48 @@ function drawPad(){const cv=$('#cvPad');const {ctx,W,H}=fit(cv);if(W<20)return;p
   up(){if(D.cur){const a=D.cur.pts[0],b=D.cur.pts[D.cur.pts.length-1];if(D.cur.pts.length>2||Math.hypot(a[0]-b[0],a[1]-b[1])>.01)D.lines.push({kind:D.cur.kind,pts:D.cur.pts});}D.cur=null;D.drag=null;drawPad();},
   hover(p){const r=cv.getBoundingClientRect();cv.style.cursor=D.vps.some(v=>dist(p,[v[0]*r.width,v[1]*r.height])<20)?'grab':'crosshair';}});})();
 function setMode(m){D.mode=m;D.vps=m===1?[[.5,.4]]:[[.06,.4],[.94,.4]];$$('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.mode===m)));drawPad();}
-$$('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(+b.dataset.mode)));
+$$('[data-mode]').forEach(b=>b.addEventListener('click',()=>{const m=+b.dataset.mode;if(GD.key&&GUIDES[GD.key].m!==m){GD.key=null;guideUI();}setMode(m);}));
 $$('[data-tool]').forEach(b=>b.addEventListener('click',()=>{D.tool=b.dataset.tool;$$('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));}));
 $('#padUndo').addEventListener('click',()=>{D.lines.pop();drawPad();});
 $('#padClear').addEventListener('click',()=>{D.lines=[];drawPad();});
 $('#padGuide').addEventListener('change',e=>{D.guide=e.target.checked;drawPad();});
-const CHL={hall:{m:1,t:'복도: ① 가운데에 작은 네모(복도 끝)를 그려요 ② 네 모서리에서 소실점 반대쪽으로 선을 뻗어 벽·천장·바닥을 만들어요 ③ 문과 창문은 세로선 + 소실점 선으로!'},name:{m:1,t:'입체 글자: ① 이름 첫 글자를 반듯한 블록 모양으로 그려요 ② 모든 모서리에서 소실점 쪽으로 짧게 선을 그어요 ③ 같은 길이에서 끊고 뒷면 선을 이어요.'},street:{m:2,t:'골목길: ① 가운데에 세로선 하나(가장 가까운 건물 모서리) ② 위·아래 끝에서 두 소실점으로 선을 그어요 ③ 세로선으로 건물 끝을 정하고, 창문도 같은 방법으로 반복해요.'}};
-$$('[data-ch]').forEach(b=>{if(b.classList.contains('btn'))b.addEventListener('click',()=>{const c=CHL[b.dataset.ch];if(D.mode!==c.m)setMode(c.m);D.lines=[];$$('.chips [data-ch]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('#padTip').textContent=c.t;drawPad();});});
+const lerpN=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
+const closeP=pts=>pts.map((p,i)=>[p,pts[(i+1)%pts.length]]);
+const GUIDES={
+ hall:{m:1,title:'복도 그리기',vps:[[.5,.42]],steps:['복도 끝 벽: 소실점을 감싸는 작은 네모를 그려요.','네 모서리에서 소실점 반대쪽으로 선을 쭉 뻗어요. 벽·천장·바닥이 생겨요.','문과 창문: 세로선을 두 개 세우고, 위아래 선은 소실점을 향하게!','바닥 타일: 소실점에서 나오는 선 + 가로선. 멀수록 칸이 좁아져요.'],
+  gen(v){const vp=v[0],w=.2,h=.26;const B=[[vp[0]-w/2,vp[1]-h*.45],[vp[0]+w/2,vp[1]-h*.45],[vp[0]+w/2,vp[1]+h*.55],[vp[0]-w/2,vp[1]+h*.55]];const ext=(p,k)=>[vp[0]+(p[0]-vp[0])*k,vp[1]+(p[1]-vp[1])*k];
+   const D0=lerpN(B[3],B[0],.62),k1=1.7,k2=2.25;const Wb=lerpN(B[2],B[1],.35),Wt=lerpN(B[2],B[1],.75),ka=1.45,kb=2.3,km=(ka+kb)/2;
+   return[closeP(B),B.map(p=>[p,ext(p,8)]),
+    [[ext(B[3],k1),ext(D0,k1)],[ext(B[3],k2),ext(D0,k2)],[ext(D0,k1),ext(D0,k2)],[ext(Wb,ka),ext(Wt,ka)],[ext(Wb,kb),ext(Wt,kb)],[ext(Wt,ka),ext(Wt,kb)],[ext(Wb,ka),ext(Wb,kb)],[ext(Wb,km),ext(Wt,km)]],
+    [.33,.67].map(f=>{const p=lerpN(B[3],B[2],f);return[p,ext(p,8)];}).concat([1.35,1.9,2.9].map(k=>[ext(B[3],k),ext(B[2],k)]))];}},
+ name:{m:1,title:'입체 이름 글자',vps:[[.5,.16]],steps:['글자 앞면: 이름 첫 글자를 두꺼운 블록 모양으로 (예시는 ㄱ).','모든 꼭짓점에서 소실점 쪽으로 짧은 선을 같은 비율만큼 그어요.','선 끝을 이어 뒷면을 그려요. 앞면에 가려진 선은 나중에 지워요.','윗면에 빗금이나 색을 넣으면 더 입체적이에요!'],
+  gen(v){const vp=v[0];const P=[[.22,.5],[.66,.5],[.66,.9],[.54,.9],[.54,.62],[.22,.62]];const Bk=P.map(p=>lerpN(p,vp,.16));
+   return[closeP(P),P.map((p,i)=>[p,Bk[i]]),closeP(Bk),[.2,.4,.6,.8].map(f=>[lerpN(P[0],Bk[0],f),lerpN(P[1],Bk[1],f)])];}},
+ street:{m:2,title:'골목길 건물',vps:[[.06,.4],[.94,.4]],steps:['가장 가까운 건물 모서리를 세로선 하나로 그려요.','위·아래 끝에서 두 소실점으로 선을 그어요.','건물이 끝나는 곳에 세로선을 세워요.','창문과 문: 세로선 + 소실점을 향하는 위아래 선.','보도 선도 같은 소실점으로 보내면 거리 완성!'],
+  gen(v){const V1=v[0],V2=v[1],hy=V1[1];const x0=(V1[0]+V2[0])/2;const top=[x0,Math.max(.05,hy-.3)],bot=[x0,Math.min(.92,hy+.45)];const at=(p,V,x)=>lerpN(p,V,(x-p[0])/(V[0]-p[0]));const xl=x0-.22,xr=x0+.24;
+   const face=(V,x,f)=>lerpN(at(top,V,x),at(bot,V,x),f);const win=(V,xa,xb,fa,fb)=>[[face(V,xa,fa),face(V,xa,fb)],[face(V,xb,fa),face(V,xb,fb)],[face(V,xa,fa),face(V,xb,fa)],[face(V,xa,fb),face(V,xb,fb)]];
+   let w=[];[[x0+.04,x0+.09],[x0+.13,x0+.18]].forEach(([a,b])=>[[.12,.28],[.38,.54]].forEach(([fa,fb])=>{w=w.concat(win(V2,a,b,fa,fb));}));[[x0-.08,x0-.04],[x0-.18,x0-.13]].forEach(([a,b])=>[[.12,.28],[.38,.54]].forEach(([fa,fb])=>{w=w.concat(win(V1,b,a,fa,fb));}));w=w.concat(win(V1,x0-.12,x0-.06,.72,1));
+   const g=[x0,Math.min(.99,bot[1]+.05)];
+   return[[[top,bot]],[[top,V1],[bot,V1],[top,V2],[bot,V2]],[[at(top,V1,xl),at(bot,V1,xl)],[at(top,V2,xr),at(bot,V2,xr)]],w,[[g,V1],[g,V2]]];}}
+};
+const GD={key:null,step:0,show:true};
+function drawGhost(ctx,W,H){if(!GD.key||!GD.show)return;const st=GUIDES[GD.key].gen(D.vps);ctx.save();ctx.lineCap='round';
+  st.forEach((ls,i)=>{if(i>GD.step)return;const cur=i===GD.step;ctx.strokeStyle=cur?COL.vp:COL.guide;ctx.globalAlpha=cur?.85:.45;ctx.lineWidth=cur?2:1.4;ctx.setLineDash(cur?[7,6]:[4,6]);ls.forEach(l=>seg(ctx,[l[0][0]*W,l[0][1]*H],[l[1][0]*W,l[1][1]*H]));});ctx.restore();}
+function drawEx(){const cv=$('#cvEx');if(!cv||!GD.key)return;const {ctx,W,H}=fit(cv);if(W<20)return;paper(ctx,W,H);const g=GUIDES[GD.key];const v=g.vps;
+  ctx.strokeStyle=COL.guide;ctx.globalAlpha=.7;ctx.lineWidth=1;seg(ctx,[0,v[0][1]*H],[W,v[0][1]*H]);ctx.globalAlpha=1;
+  const st=g.gen(v);ctx.lineCap='round';st.forEach((ls,i)=>{const isRay=(GD.key==='hall'&&(i===1||i===3))||(GD.key==='street'&&(i===1||i===4));ctx.strokeStyle=isRay?COL.graphite:COL.ink;ctx.lineWidth=isRay?1:1.6;ctx.globalAlpha=isRay?.6:1;ls.forEach(l=>seg(ctx,[l[0][0]*W,l[0][1]*H],[l[1][0]*W,l[1][1]*H]));});ctx.globalAlpha=1;
+  v.forEach(p=>{ctx.beginPath();ctx.arc(p[0]*W,p[1]*H,3.5,0,TAU);ctx.fillStyle=COL.vp;ctx.fill();});}
+function guideUI(){const box=$('#guidebox');$$('.chips [data-ch]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.ch===GD.key)));
+  if(!GD.key){box.hidden=true;return;}box.hidden=false;const g=GUIDES[GD.key];$('#gTitle').textContent=g.title;$('#gNo').textContent=`${GD.step+1} / ${g.steps.length}`;
+  $('#gSteps').innerHTML=g.steps.map((t,i)=>`<li data-i="${i}" class="${i<GD.step?'past':i===GD.step?'cur':''}">${t}</li>`).join('');
+  $$('#gSteps li').forEach(li=>li.addEventListener('click',()=>{GD.step=+li.dataset.i;guideUI();drawPad();}));
+  $('#gPrev').disabled=GD.step===0;$('#gNext').textContent=GD.step===g.steps.length-1?'처음부터 ↺':'다음 단계 ▶';drawEx();}
+function selectGuide(k){const g=GUIDES[k];GD.key=k;GD.step=0;D.mode=g.m;D.vps=g.vps.map(p=>p.slice());D.lines=[];$$('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.mode===g.m)));guideUI();drawPad();}
+$$('.chips [data-ch]').forEach(b=>b.addEventListener('click',()=>selectGuide(b.dataset.ch)));
+$('#gPrev').addEventListener('click',()=>{if(GD.step>0){GD.step--;guideUI();drawPad();}});
+$('#gNext').addEventListener('click',()=>{const n=GUIDES[GD.key].steps.length;GD.step=GD.step===n-1?0:GD.step+1;guideUI();drawPad();});
+$('#gShow').addEventListener('change',e=>{GD.show=e.target.checked;drawPad();});
+selectGuide('hall');
 
 /* ═════════ 설정 ═════════ */
 $('#teacherMode').addEventListener('change',e=>{S.teacher=e.target.checked;save();refreshGlobal();toast(S.teacher?'선생님 모드: 모든 장소가 열렸어요':'선생님 모드를 껐어요');});
@@ -951,7 +1007,7 @@ $('#resetBtn').addEventListener('click',e=>{const b=e.currentTarget;if(!b.datase
 /* ═════════ 라우팅 ═════════ */
 CH.forEach(c=>{setupDialog(c.id);buildMissions(c);});setupDialog('end');sceneStars();
 $('#heroPen').innerHTML=CHARS.pen.svg;
-const DRAW={map:drawMap,ch1:drawLearn,ch2:()=>{drawOne();oneInfo();},ch3:()=>{drawTwo();twoInfo();},ch4:drawRoom,ch5:()=>{if(!G.cur)newRound();else drawGame();},ending:drawPad};
+const DRAW={map:drawMap,ch1:drawLearn,ch2:()=>{drawOne();oneInfo();},ch3:()=>{drawTwo();twoInfo();},ch4:drawRoom,ch5:()=>{if(!G.cur)newRound();else drawGame();},ending:()=>{drawPad();drawEx();}};
 let current='map';const visited={};
 function show(id){if(!DRAW[id])id='map';
   if(/^ch\d$/.test(id)&&!unlocked(+id[2])){toast('아직 잠겨 있어요. 이전 장소의 부탁을 먼저 해결해요!');location.replace('#map');id='map';}
