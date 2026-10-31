@@ -156,6 +156,9 @@ td.min{white-space:nowrap;font-variant-numeric:tabular-nums}
 .note{font-size:14.5px;color:var(--muted)}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:var(--muted)}
 .sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:5px;border:1px solid var(--line)}
+.warm{background:color-mix(in srgb,var(--c3) 8%,var(--card));border:1.5px solid color-mix(in srgb,var(--c3) 35%,var(--line));border-radius:12px;padding:10px 12px;display:grid;gap:6px}
+.stepbadge{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--c3);color:#fff;font-family:var(--font-body);font-size:13px;vertical-align:3px;margin-right:2px}
+[data-preset][data-seen]::after{content:" ✓";color:var(--good);font-weight:700}
 .secret{background:var(--paper);border:1.5px dashed var(--cc);border-radius:10px;padding:12px 14px;font-size:15px}
 .secret h4{margin:0 0 4px;font-family:var(--font-hand);font-size:19px;color:var(--cc)}
 .secret.locked{border-color:var(--line);color:var(--muted)}
@@ -168,11 +171,6 @@ td.min{white-space:nowrap;font-variant-numeric:tabular-nums}
 .ctl output{font-variant-numeric:tabular-nums;color:var(--muted);min-width:7.5em;font-size:13.5px}
 .eyeout{display:inline-flex;align-items:center;gap:6px;min-width:8.5em!important;color:var(--ink)!important;font-weight:700}
 .eyeout svg{width:34px;height:34px;flex:none}
-.eyepre{display:flex;gap:4px}
-.eyepre button{display:grid;justify-items:center;gap:0;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:3px 7px 2px;cursor:pointer;font-size:11.5px;line-height:1.2}
-.eyepre button svg{width:28px;height:28px}
-.eyepre button:hover{border-color:var(--ink)}
-.eyepre button[aria-pressed="true"]{border-color:var(--ink);background:color-mix(in srgb,var(--mark) 45%,var(--card))}
 .eyeic .bd{fill:var(--ink)}.eyeic .ln{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.eyeic .ac{fill:var(--guide)}.eyeic .sky{fill:none;stroke:var(--guide);stroke-width:1.5;stroke-dasharray:2 2}
 .ctl input[type=checkbox]{width:18px;height:18px;accent-color:var(--guide)}
 .btn{font-size:14.5px;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);padding:6px 14px;border-radius:999px;cursor:pointer;line-height:1.3;transition:transform .1s,background .15s;text-decoration:none;display:inline-block}
@@ -337,7 +335,6 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
       <canvas id="cvLearn" aria-label="기찻길과 전봇대가 멀어질수록 한 점으로 모이는 그림"></canvas>
       <div class="board-foot">
         <label class="ctl" for="eyeH">내 눈높이 <input type="range" id="eyeH" min="0.3" max="9" step="0.1" value="1.6"><output id="eyeOut" class="eyeout"></output></label>
-        <div class="eyepre" role="group" aria-label="눈높이 바로 고르기"><button type="button" data-h="0.3" title="개미 0.3m"></button><button type="button" data-h="1.6" title="사람 1.6m"></button><button type="button" data-h="3.2" title="2층 창문 3.2m"></button><button type="button" data-h="8" title="새 8m"></button></div>
         <label class="ctl" for="learnGuide"><input type="checkbox" id="learnGuide" checked> 가이드선</label>
       </div>
     </div>
@@ -388,9 +385,14 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
       </div>
     </div>
     <aside class="side">
-      <div class="mhead"><h3>코너 박사의 설계도</h3></div>
+      <div class="warm">
+        <div class="mhead"><h3><span class="stepbadge">1</span> 먼저 구경하기</h3><span class="note" id="presetCount">0 / 3</span></div>
+        <p class="note">코너 박사가 지어 둔 건물 세 채예요. 눌러 보고 어떤 면이 보이는지 살펴봐요.</p>
+        <div class="row"><button class="btn" type="button" data-preset="desk">책상 위 상자</button><button class="btn" type="button" data-preset="city">거리의 빌딩</button><button class="btn" type="button" data-preset="float">공중에 뜬 상자</button></div>
+      </div>
+      <div class="mhead"><h3><span class="stepbadge">2</span> 직접 설계하기</h3></div>
+      <p class="note" style="margin-top:-6px">예시 버튼으로는 미션이 완료되지 않아요. 소실점과 모서리를 <b>직접 끌어서</b> 만들어 보세요.</p>
       <ul class="missions" id="ms3"></ul>
-      <div class="row"><button class="btn" type="button" data-preset="desk">책상 위 상자</button><button class="btn" type="button" data-preset="city">거리의 빌딩</button><button class="btn" type="button" data-preset="float">공중에 뜬 상자</button></div>
       <p class="obs" id="twoObs"></p>
       <p class="note">소실점을 위아래로 끌면 눈높이가 바뀌어요. 세로 모서리의 위·아래 동그라미를 끌면 높이가 바뀌어요.</p>
       <div class="secret" data-secret="3"><h4>원근법의 비밀 ③ · 2점 투시</h4><ol><li>모서리가 나를 향하면 소실점은 <b>두 개</b>.</li><li>왼쪽 면은 소실점 ①, 오른쪽 면은 소실점 ②로.</li><li>세로선은 <b>절대 기울이지 않는다</b>.</li></ol></div>
@@ -503,13 +505,13 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
     <div class="chip" id="clearChip"></div>
     <h2 id="clearTitle"></h2>
     <div class="say"><div class="por" id="clearPor"></div><p id="clearSay"></p></div>
-    <div class="row" style="justify-content:center"><button class="btn" id="clearMap" type="button">지도 보기</button><button class="btn primary" id="clearNext" type="button">다음 장소로</button></div>
+    <div class="row" style="justify-content:center"><button class="btn" id="clearStay" type="button">여기서 더 실험하기</button><button class="btn" id="clearMap" type="button">지도 보기</button><button class="btn primary" id="clearNext" type="button">다음 장소로</button></div>
   </div>
 </div>
 <div class="tv" id="tv" hidden role="dialog" aria-modal="true" aria-label="오프닝 뉴스 영상">
   <div class="tv-in">
     <div class="tv-screen"><canvas id="cvTv" aria-label="깊이 마을 긴급 속보 애니메이션"></canvas><button class="tv-big" id="tvBig" type="button" aria-label="재생" hidden>▶</button><button class="btn primary big tv-start" id="tvStart" type="button" hidden>모험 시작하기 ▶</button></div>
-    <div class="tv-ctl"><button class="btn" id="tvPlay" type="button">▶ 재생</button><div class="tv-bar" id="tvBar"><i id="tvFill"></i></div><span id="tvTime">0:00 / 0:55</span><button class="btn" id="tvFull" type="button">전체 화면</button><button class="btn" id="tvClose" type="button">닫기 ✕</button></div>
+    <div class="tv-ctl"><button class="btn" id="tvPlay" type="button">▶ 재생</button><div class="tv-bar" id="tvBar"><i id="tvFill"></i></div><span id="tvTime">0:00 / 0:55</span><button class="btn" id="tvMute" type="button" aria-pressed="true">🔊 소리 켬</button><button class="btn" id="tvFull" type="button">전체 화면</button><button class="btn" id="tvClose" type="button">닫기 ✕</button></div>
   </div>
 </div>
 <div class="modal" id="resetModal" hidden role="dialog" aria-modal="true" aria-labelledby="resetTitle">
@@ -587,7 +589,7 @@ const CH=[
  {id:3,place:'빌딩 거리',who:'corner',badge:'2점 투시 배지',concept:'2점 투시',desc:'간판처럼 납작해진 빌딩을 소실점 두 개로 다시 세워요.',
   missions:[{m:'top',t:'위에서 내려다본 상자 (<b>윗면</b> 보이기)'},{m:'bottom',t:'아래에서 올려다본 상자 (<b>밑면</b> 보이기)'},{m:'cross',t:'수평선이 상자를 <b>가로지르게</b> (빌딩처럼)'},{m:'close',t:'두 소실점을 <b>가깝게</b> 모아 찌그러짐 관찰하기'}],
   quiz:{q:'2점 투시에서 건물의 세로 모서리는 어떻게 그릴까?',a:['소실점 쪽으로 기울여서','똑바로 세로로','가로로 눕혀서'],ok:1},
-  intro:[['corner','이 거리의 빌딩들이 전부 납작한 간판이 돼 버렸어. 설계도를 다시 그려야 해!'],['corner','건물의 <b>모서리</b>를 바라볼 땐 소실점이 <b>두 개</b> 필요하지. 왼쪽 면은 소실점 ①로, 오른쪽 면은 소실점 ②로.'],['corner','그리고 꼭 기억해. <b>세로 모서리는 절대 기울이지 않는다!</b> 자, 설계도 미션을 시작해 볼까?']],
+  intro:[['corner','이 거리의 빌딩들이 전부 납작한 간판이 돼 버렸어. 설계도를 다시 그려야 해!'],['corner','건물의 <b>모서리</b>를 바라볼 땐 소실점이 <b>두 개</b> 필요하지. 왼쪽 면은 소실점 ①로, 오른쪽 면은 소실점 ②로.'],['corner','그리고 꼭 기억해. <b>세로 모서리는 절대 기울이지 않는다!</b> '],['corner','먼저 오른쪽 <b>[1 먼저 구경하기]</b>의 건물 세 채를 눌러 봐. 그다음 소실점과 모서리를 직접 끌어서 설계도 미션을 해결하는 거야!']],
   react:{top:'좋아, 내려다본 상자! 책상 위 주사위가 딱 이렇게 보이지.',bottom:'올려다보니 <b>밑면</b>이 보이는군. 하늘에 뜬 열기구 상자 같아!',cross:'바로 이거야! 수평선이 건물을 가로지르면 길에 서서 빌딩을 보는 장면이 되지.',close:'으악, 찌그러졌다! 소실점이 너무 가까우면 이렇게 돼. 그래서 화가들은 소실점을 <b>멀리, 종이 밖에도</b> 둔다네.',ok:'정답! 세로선은 <b>똑바로</b>. 이게 2점 투시의 약속이야.',no:'아니야! 내가 처음에 꼭 기억하라고 한 말이 뭐였지?'},
   clear:'거리에 빌딩이 우뚝 섰어! 2점 투시 배지를 받아. 언덕 위 화실에서 선우 작가가 기다려.'},
  {id:4,place:'언덕 위 화실',who:'sunwoo',badge:'스케치 배지',concept:'따라 그리기',desc:'배운 원리로 내 방 또는 시골길 풍경을 처음부터 끝까지 그려요.',
@@ -645,6 +647,7 @@ function complete(id,m,reactKey){const d=S.done[id];if(d[m])return;d[m]=1;save()
 /* ═════════ 클리어 모달 ═════════ */
 function showClear(id){const c=CH[id-1];const m=$('#clearModal');m.style.setProperty('--cc',`var(--c${id})`);$('#clearStamp').innerHTML=badge(id,true);$('#clearChip').textContent=`CHAPTER ${id} 클리어`;$('#clearTitle').textContent=c.badge+' 획득!';$('#clearPor').innerHTML=CHARS[c.who].svg;$('#clearSay').textContent=c.clear;$('#clearNext').textContent=id===5?'엔딩 보기':'다음 장소로';$('#clearNext').dataset.to=id===5?'ending':'ch'+(id+1);m.hidden=false;$('#clearNext').focus();}
 $('#clearMap').addEventListener('click',()=>{$('#clearModal').hidden=true;location.hash='map';});
+$('#clearStay').addEventListener('click',()=>{$('#clearModal').hidden=true;toast('마음껏 더 실험해 보세요. 다음 장소는 지도에서 열려 있어요!');});
 $('#clearNext').addEventListener('click',()=>{$('#clearModal').hidden=true;location.hash=$('#clearNext').dataset.to;});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#clearModal').hidden)$('#clearModal').hidden=true;});
 
@@ -747,8 +750,7 @@ const EYE_IC={
  win:'<svg class="eyeic" viewBox="0 0 32 32" aria-hidden="true"><path class="ln" d="M6 30 L6 10 L16 3 L26 10 L26 30 Z M6 18 L26 18"/><rect class="ac" x="12" y="9" width="8" height="6" rx="1"/><circle class="bd" cx="16" cy="11.6" r="1.6"/><rect class="ln" x="13" y="22" width="6" height="8"/></svg>',
  bird:'<svg class="eyeic" viewBox="0 0 32 32" aria-hidden="true"><path class="sky" d="M2 27 Q16 22 30 27"/><path class="bd" d="M6 14 Q11 6 16 13 Q21 6 26 14 Q21 10 16 16 Q11 10 6 14 Z"/><path class="bd" d="M14 15 Q16 20 18 15 Z"/></svg>'};
 function eyeKind(h){return h<.9?['ant','개미']:h<2.3?['person','사람']:h<4.6?['win','2층 창문']:['bird','새'];}
-$$('.eyepre button').forEach(b=>{const [k,n]=eyeKind(+b.dataset.h);b.innerHTML=EYE_IC[k]+n;b.addEventListener('click',()=>{const e=$('#eyeH');e.value=b.dataset.h;e.dispatchEvent(new Event('input'));});});
-function learnText(){const h=L.h;const [ek,name]=eyeKind(h);$('#eyeOut').innerHTML=`${EYE_IC[ek]}<span>${name} · ${h.toFixed(1)}m</span>`;$$('.eyepre button').forEach(b=>b.setAttribute('aria-pressed',String(eyeKind(+b.dataset.h)[0]===ek)));let t;
+function learnText(){const h=L.h;const [ek,name]=eyeKind(h);$('#eyeOut').innerHTML=`${EYE_IC[ek]}<span>${name} · ${h.toFixed(1)}m</span>`;let t;
   if(Math.abs(h-4)<.15)t='눈높이가 전봇대 꼭대기(4m)와 같아서, 모든 전봇대 꼭대기가 <b>수평선 위에 딱 걸쳐요</b>.';
   else if(h<4)t=`전봇대(4m)가 내 눈(${h.toFixed(1)}m)보다 높아서 <b>수평선 위로 솟아</b> 보여요.`;
   else t=`내 눈(${h.toFixed(1)}m)이 전봇대보다 높아서 꼭대기가 모두 <b>수평선 아래</b>로 내려가요.`;
@@ -816,7 +818,8 @@ $('#twoL').addEventListener('input',e=>{T.tL=+e.target.value;drawTwo();});
 $('#twoR').addEventListener('input',e=>{T.tR=+e.target.value;drawTwo();});
 $('#twoGuide').addEventListener('change',e=>{T.guide=e.target.checked;drawTwo();});
 const PRESETS={desk:{hy:.2,v1:.04,v2:.96,e:{x:.48,top:.44,bot:.78},tL:.32,tR:.3},city:{hy:.72,v1:.03,v2:.97,e:{x:.45,top:.05,bot:.9},tL:.2,tR:.28},float:{hy:.86,v1:.06,v2:.94,e:{x:.52,top:.16,bot:.5},tL:.3,tR:.28}};
-$$('[data-preset]').forEach(b=>b.addEventListener('click',()=>{Object.assign(T,JSON.parse(JSON.stringify(PRESETS[b.dataset.preset])));T.touched=true;$('#twoL').value=T.tL;$('#twoR').value=T.tR;drawTwo();twoInfo();}));
+const PRESET_SAY={desk:'책상 위 주사위야. 내 눈보다 <b>아래</b>에 있으니까 <b>윗면</b>이 보이지.',city:'길에서 빌딩을 보면 수평선이 건물 <b>중간</b>을 지나가. 그래서 윗면도 밑면도 안 보여.',float:'하늘에 뜬 상자는 <b>올려다보니까</b> 밑면이 보인다네. 이제 직접 만들어 볼 차례야!'};
+$$('[data-preset]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.preset;Object.assign(T,JSON.parse(JSON.stringify(PRESETS[k])));T.touched=false;b.dataset.seen='1';$('#presetCount').textContent=`${$$('[data-preset][data-seen]').length} / 3`;$('#twoL').value=T.tL;$('#twoR').value=T.tR;drawTwo();twoInfo();say(3,[['corner',PRESET_SAY[k]]],true);}));
 
 /* ═════════ CH4 언덕 위 화실: 따라 그리기 ═════════ */
 const SCENES={
@@ -1149,17 +1152,61 @@ function tvFrame(ctx,W,H,t){
   if(t<49)tvTicker(ctx,W,H,t);
 }
 function tvDraw(){const cv=$('#cvTv');const {ctx,W,H}=fit(cv);if(W<20)return;tvFrame(ctx,W,H,Math.min(TV.t,TV.T-.001));const m=Math.floor(TV.t/60),s=Math.floor(TV.t%60);$('#tvTime').textContent=`${m}:${String(s).padStart(2,'0')} / 0:${TV.T}`;$('#tvFill').style.width=(TV.t/TV.T*100)+'%';$('#tvStart').hidden=TV.t<TV.T-.05;$('#tvBig').hidden=TV.playing||TV.t>=TV.T-.05;$('#tvPlay').textContent=TV.playing?'❚❚ 일시정지':'▶ 재생';}
-function tvLoop(now){if(!TV.playing)return;const dt=Math.min(.1,(now-TV.last)/1000);TV.last=now;TV.t+=dt;if(TV.t>=TV.T){TV.t=TV.T;TV.playing=false;}tvDraw();if(TV.playing)TV.raf=requestAnimationFrame(tvLoop);}
-function tvPlay(){if(TV.t>=TV.T-.05)TV.t=0;TV.playing=true;TV.last=performance.now();cancelAnimationFrame(TV.raf);TV.raf=requestAnimationFrame(tvLoop);tvDraw();}
+/* ── 오프닝 영상 소리 (Web Audio로 직접 합성) ── */
+const AU={ctx:null,master:null,muted:false,lastT:0,lastStep:-1,nbuf:null};
+const STEP=.125; // 120bpm 16분음표
+try{AU.muted=localStorage.getItem('persp-tv-muted')==='1';}catch(e){}
+const mf=m=>440*Math.pow(2,(m-69)/12);
+function auInit(){if(AU.ctx){if(AU.ctx.state==='suspended')AU.ctx.resume().catch(()=>{});return;}try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;AU.ctx=new C();AU.master=AU.ctx.createGain();AU.master.gain.value=AU.muted?0:.55;
+  const comp=AU.ctx.createDynamicsCompressor();AU.master.connect(comp);comp.connect(AU.ctx.destination);
+  const len=AU.ctx.sampleRate;const b=AU.ctx.createBuffer(1,len,AU.ctx.sampleRate);const d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;AU.nbuf=b;}catch(e){AU.ctx=null;}}
+function auOK(){return AU.ctx&&AU.ctx.state!=='closed';}
+function tone(f,dur,type,vol,at,slide,attack){if(!auOK())return;const c=AU.ctx,t=c.currentTime+(at||0)+.02;const o=c.createOscillator(),g=c.createGain();o.type=type||'square';o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(20,slide),t+dur);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+(attack||.006));g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(AU.master);o.start(t);o.stop(t+dur+.05);}
+function noise(dur,vol,at,type,freq,freqTo){if(!auOK()||!AU.nbuf)return;const c=AU.ctx,t=c.currentTime+(at||0)+.02;const s=c.createBufferSource();s.buffer=AU.nbuf;const f=c.createBiquadFilter();f.type=type||'highpass';f.frequency.setValueAtTime(freq||6000,t);if(freqTo)f.frequency.exponentialRampToValueAtTime(freqTo,t+dur);const g=c.createGain();
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(f);f.connect(g);g.connect(AU.master);s.start(t,Math.random()*.5);s.stop(t+dur+.05);}
+// 효과음
+const SFX={
+  sting(){[[67,74,79],[72,79,84]].forEach((ch,i)=>ch.forEach(m=>{tone(mf(m),i?.9:.22,'sawtooth',.07,i*.28);tone(mf(m-12),i?.9:.22,'square',.035,i*.28);}));noise(.25,.25,0,'lowpass',180);noise(.35,.2,.28,'lowpass',160);tone(mf(91),.7,'sine',.06,.62);},
+  whoosh(){noise(.6,.18,0,'bandpass',300,3500);},
+  chant(){[0,.45,.9].forEach(d=>tone(420,.38,'triangle',.08,d,190));},
+  boom(){noise(1.2,.5,0,'lowpass',900,60);tone(90,1,'sine',.45,0,28);tone(1400,.45,'sawtooth',.06,0,90);},
+  squish(){tone(320,1.1,'sawtooth',.07,0,55);noise(.5,.08,.5,'bandpass',900,200);},
+  boing(){tone(180,.45,'sine',.18,0,620);tone(620,.3,'sine',.12,.42,240);},
+  ding(){tone(mf(88),.5,'sine',.12);tone(mf(95),.4,'sine',.05,.02);},
+  sparkle(){[79,83,86,91,95,98].forEach((m,i)=>tone(mf(m),.35,'triangle',.06,i*.08));},
+  fanfare(){[60,64,67,72].forEach((m,i)=>{tone(mf(m),.2,'square',.06,i*.14);tone(mf(m-12),.2,'triangle',.08,i*.14);});[72,76,79].forEach(m=>{tone(mf(m),1.4,'square',.05,.6);tone(mf(m-12),1.4,'triangle',.07,.6);});noise(.2,.15,.6,'highpass',7000);}
+};
+const SFX_AT=[[.05,'sting'],[6,'whoosh'],[15.2,'chant'],[17.2,'boom'],[17.6,'squish'],[22,'whoosh'],[23.5,'boing'],[30,'ding'],[34,'ding'],[38,'ding'],[42,'whoosh'],[45.6,'sparkle'],[49,'fanfare']];
+// 배경음악: 구간마다 다른 패턴
+const PROG={bed:[[48,[60,64,67]],[45,[57,60,64]],[41,[57,60,65]],[43,[59,62,67]]],hope:[[41,[65,69,72]],[43,[67,71,74]],[40,[64,67,71]],[45,[69,72,76]]]};
+function musicStep(s,t){if(!auOK())return;const pos=s%16,bar=Math.floor(s/16);
+  const bed=(prog,lead,soft)=>{const [root,ch]=prog[bar%4];if(pos===0||pos===6||pos===8||pos===14)tone(mf(root),.22,'triangle',soft?.09:.13);if(pos%4===2)noise(.05,soft?.02:.035,0,'highpass',8000);if(pos===4||pos===12)noise(.09,soft?.03:.05,0,'bandpass',1800);
+    if(lead&&pos%2===0){const seq=[0,1,2,1,0,2,1,2];const m=ch[seq[(pos/2)%8]]+12;tone(mf(m),.13,'square',soft?.018:.028);}if(!lead&&pos%4===0)tone(mf(ch[(pos/4)%3]+12),.18,'triangle',.04);};
+  if(t<6)bed(PROG.bed,true);
+  else if(t<14)bed(PROG.bed,true);
+  else if(t<17.2){if(pos===0)tone(55,2,'sawtooth',.05,0,52,.3);if(pos%4===0){const m=[75,72,70,66][(pos/4)%4];tone(mf(m),.4,'triangle',.05);}}
+  else if(t<22){if(pos%2===0&&Math.random()<.6){const p=[84,86,89,91,93,96];tone(mf(p[Math.floor(Math.random()*p.length)]),.25,'triangle',.03);}if(pos===0)tone(65,1.8,'sine',.06);}
+  else if(t<30){if(pos===0||pos===8)tone(mf(43),.3,'sine',.16,0,mf(55));const silly=[67,66,67,0,64,63,64,0,62,0,64,0,67,0,0,0];const m=silly[pos];if(m)tone(mf(m),.12,'sawtooth',.03);if(pos%4===2)noise(.04,.03,0,'highpass',8000);}
+  else if(t<42)bed(PROG.bed,false,true);
+  else if(t<49)bed(PROG.hope,t>45.5);
+}
+function auTick(t0,t1){if(!auOK()||AU.muted)return;SFX_AT.forEach(([at,k])=>{if(at>t0&&at<=t1)SFX[k]();});const s1=Math.floor(t1/STEP);if(t1>=49){AU.lastStep=s1;return;}let s=Math.max(AU.lastStep+1,s1-2);for(;s<=s1;s++)musicStep(s,s*STEP);AU.lastStep=s1;}
+function auSync(){AU.lastT=TV.t;AU.lastStep=Math.floor(TV.t/STEP);}
+function muteUI(){const b=$('#tvMute');if(b){b.textContent=AU.muted?'🔇 소리 끔':'🔊 소리 켬';b.setAttribute('aria-pressed',String(!AU.muted));}}
+
+function tvLoop(now){if(!TV.playing)return;const dt=Math.min(.1,(now-TV.last)/1000);TV.last=now;const t0=TV.t;TV.t+=dt;auTick(t0,Math.min(TV.t,TV.T));if(TV.t>=TV.T){TV.t=TV.T;TV.playing=false;}tvDraw();if(TV.playing)TV.raf=requestAnimationFrame(tvLoop);}
+function tvPlay(){if(TV.t>=TV.T-.05)TV.t=0;auInit();if(TV.t<.05)TV.t=0;auSync();if(TV.t===0)AU.lastT=-1;TV.playing=true;TV.last=performance.now();cancelAnimationFrame(TV.raf);TV.raf=requestAnimationFrame(tvLoop);tvDraw();}
 function tvPause(){TV.playing=false;cancelAnimationFrame(TV.raf);tvDraw();}
-function tvOpen(){$('#tv').hidden=false;TV.t=0;requestAnimationFrame(()=>{tvDraw();tvPlay();});}
-function tvClose(){tvPause();$('#tv').hidden=true;if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});}
+function tvOpen(){auInit();muteUI();$('#tv').hidden=false;TV.t=0;requestAnimationFrame(()=>{tvDraw();tvPlay();});}
+function tvClose(){tvPause();if(auOK())AU.ctx.suspend().catch(()=>{});$('#tv').hidden=true;if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});}
 $$('[data-tv]').forEach(b=>b.addEventListener('click',tvOpen));
 $('#tvPlay').addEventListener('click',()=>TV.playing?tvPause():tvPlay());
 $('#tvBig').addEventListener('click',tvPlay);
 $('#cvTv').addEventListener('click',()=>{if(TV.t<TV.T-.05)(TV.playing?tvPause():tvPlay());});
 $('#tvClose').addEventListener('click',tvClose);
-$('#tvBar').addEventListener('pointerdown',e=>{const r=e.currentTarget.getBoundingClientRect();TV.t=clamp((e.clientX-r.left)/r.width,0,1)*TV.T;tvDraw();});
+$('#tvBar').addEventListener('pointerdown',e=>{const r=e.currentTarget.getBoundingClientRect();TV.t=clamp((e.clientX-r.left)/r.width,0,1)*TV.T;auSync();tvDraw();});
+$('#tvMute').addEventListener('click',()=>{AU.muted=!AU.muted;try{localStorage.setItem('persp-tv-muted',AU.muted?'1':'0');}catch(e){}auInit();if(AU.master)AU.master.gain.setTargetAtTime(AU.muted?0:.55,AU.ctx.currentTime,.05);muteUI();});
 $('#tvFull').addEventListener('click',()=>{const el=$('#tv');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else if(el.requestFullscreen)el.requestFullscreen().catch(()=>toast('이 화면에서는 전체 화면을 쓸 수 없어요'));});
 $('#tvStart').addEventListener('click',()=>{tvClose();const c=currentCh();location.hash=c==='end'?'ending':'ch'+c;});
 document.addEventListener('keydown',e=>{if($('#tv').hidden)return;if(e.key==='Escape')tvClose();else if(e.key===' '){e.preventDefault();TV.playing?tvPause():tvPlay();}});
