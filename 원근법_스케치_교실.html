@@ -181,6 +181,9 @@ td.min{white-space:nowrap;font-variant-numeric:tabular-nums}
 .btn.big{font-family:var(--font-hand);font-weight:700;font-size:21px;padding:6px 20px 4px}
 .btn[aria-pressed="true"]{background:var(--mark);color:#1f242a;border-color:#1f242a}
 .btn:disabled{opacity:.4;cursor:default}
+.btn.nudge{animation:nudge 1.1s ease-in-out infinite;position:relative}
+@keyframes nudge{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--mark) 95%,transparent)}70%{box-shadow:0 0 0 10px color-mix(in srgb,var(--mark) 0%,transparent)}100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--mark) 0%,transparent)}}
+@media (prefers-reduced-motion: reduce){.btn.nudge{animation:none!important;box-shadow:0 0 0 3px var(--mark)}}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
 /* missions */
@@ -441,7 +444,7 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
       <canvas id="cvGame" aria-label="소실점 찾기 사건 현장"></canvas>
       <div class="board-foot" style="justify-content:space-between">
         <span class="score" id="gameScore">사건 1 / 6 · 0점</span>
-        <div class="row"><button class="btn" id="gameHint" type="button">돋보기 힌트</button><button class="btn primary" id="gameNext" type="button">다음 사건</button></div>
+        <div class="row"><button class="btn" id="gameRetry" type="button" hidden>다시 조사</button><button class="btn" id="gameHint" type="button">돋보기 힌트</button><button class="btn primary" id="gameNext" type="button">다음 사건</button></div>
       </div>
     </div>
     <aside class="side">
@@ -965,7 +968,8 @@ function drawThumbs(){$$('canvas.thumb').forEach(cv=>{const k=cv.dataset.thumb;c
   ctx.save();ctx.beginPath();ctx.rect(M.fx0,M.fy0,M.fx1-M.fx0,M.fy1-M.fy0);ctx.clip();(M.fills||[]).forEach(([pts,c])=>{poly(ctx,pts,true);ctx.fillStyle=c;ctx.globalAlpha=.9;ctx.fill();});ctx.globalAlpha=1;
   S[7].strokes.forEach(st=>{if(st.kind!=='ink'&&st.kind!=='hatch')return;ctx.setLineDash([]);ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#1f242a';ctx.lineWidth=(st.kind==='hatch'?.8:1.8)*sc;ctx.globalAlpha=st.kind==='hatch'?.7:1;drawPartial(ctx,st.pts,1,st.len);});ctx.restore();
   ctx.globalAlpha=1;S[0].strokes.forEach(st=>{ctx.strokeStyle='#1f242a';ctx.lineWidth=2*sc;drawPartial(ctx,st.pts,1,st.len);});});}
-function playRoom(){cancelAnimationFrame(R.anim);const done=()=>{if(R.step===SCENES[R.scene].steps.length-1)finishScene();};if(reduce){R.prog=1;drawRoom();done();return;}R.prog=0;const t0=performance.now();const dur=R.step===0?900:R.step===7?2600:1700;const tick=now=>{R.prog=Math.min(1,(now-t0)/dur);drawRoom();if(R.prog<1)R.anim=requestAnimationFrame(tick);else done();};R.anim=requestAnimationFrame(tick);}
+function nudge(el,on){if(el)el.classList.toggle('nudge',!!on);}
+function playRoom(){cancelAnimationFrame(R.anim);nudge($('#roomNext'),false);const done=()=>{const last=R.step===SCENES[R.scene].steps.length-1;nudge($('#roomNext'),!last);if(last)finishScene();};if(reduce){R.prog=1;drawRoom();done();return;}R.prog=0;const t0=performance.now();const dur=R.step===0?900:R.step===7?2600:1700;const tick=now=>{R.prog=Math.min(1,(now-t0)/dur);drawRoom();if(R.prog<1)R.anim=requestAnimationFrame(tick);else done();};R.anim=requestAnimationFrame(tick);}
 function finishScene(){const d=S.done[4];const sc=R.scene;const first=!d[sc];if(first){d[sc]=1;save();}if(!d.one){complete(4,'one',sc);}else if(first){say(4,[['sunwoo',CH[3].react[sc]]],true);}if(d.room&&d.land&&!d.both)complete(4,'both');sceneStars();}
 function sceneStars(){['room','land'].forEach(k=>{const el=$(`[data-star="${k}"]`);if(el)el.textContent=S.done[4][k]?'· ★ 완성':'';});}
 function roomUI(){const steps=SCENES[R.scene].steps;const s=steps[R.step];$('#roomTitle').textContent=`${R.step+1}. ${s.t}`;$('#roomDesc').innerHTML=s.d;$('#roomTip').textContent=s.tip;
@@ -975,7 +979,7 @@ function roomUI(){const steps=SCENES[R.scene].steps;const s=steps[R.step];$('#ro
 function buildSteps(){$('#roomSteps').innerHTML=SCENES[R.scene].steps.map((s,i)=>`<li><button type="button" data-i="${i}">${s.t}</button></li>`).join('');$$('#roomSteps button').forEach(b=>b.addEventListener('click',()=>{R.step=+b.dataset.i;roomUI();playRoom();}));}
 $$('[data-scene]').forEach(b=>b.addEventListener('click',()=>{if(R.scene===b.dataset.scene)return;R.scene=b.dataset.scene;R.step=0;R.cache=null;buildSteps();roomUI();playRoom();}));
 $('#roomNext').addEventListener('click',()=>{const n=SCENES[R.scene].steps.length;R.step=R.step===n-1?0:R.step+1;roomUI();playRoom();});
-$('#roomPrev').addEventListener('click',()=>{if(R.step>0){R.step--;roomUI();cancelAnimationFrame(R.anim);R.prog=1;drawRoom();}});
+$('#roomPrev').addEventListener('click',()=>{if(R.step>0){R.step--;roomUI();cancelAnimationFrame(R.anim);R.prog=1;drawRoom();nudge($('#roomNext'),true);}});
 $('#roomReplay').addEventListener('click',()=>playRoom());
 document.addEventListener('keydown',e=>{if(current!=='ch4'||!$('#clearModal').hidden||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;if(e.key==='ArrowRight'){e.preventDefault();$('#roomNext').click();}else if(e.key==='ArrowLeft'){e.preventDefault();$('#roomPrev').click();}});
 $('#roomGuide').addEventListener('change',e=>{R.guide=e.target.checked;drawRoom();});
@@ -991,17 +995,23 @@ function newRound(){const r=rng(G.seed+G.i*101);const type=G.i%2===0?1:2;
 function scoreUI(){$('#gameScore').textContent=G.over?`조사 끝 · ${G.total}점`:`사건 ${G.i+1} / ${G.n} · ${G.total}점`;}
 function gameTarget(W,H){const c=G.cur;return c.type===1?[c.vp[0]*W,c.vp[1]*H]:[c.v1*W,c.hy*H];}
 function drawGame(){const cv=$('#cvGame');const {ctx,W,H}=fit(cv);if(W<20||!G.cur)return;paper(ctx,W,H);const c=G.cur;const done=!!G.guess;const tgt=gameTarget(W,H);
-  if(G.over){ctx.textAlign='center';ctx.fillStyle=COL.ink;ctx.font='700 40px Gaegu, cursive';ctx.fillText(`총점 ${G.total} / ${G.n*100}`,W/2,H/2-8);ctx.font='17px "Gowun Dodum", sans-serif';ctx.fillStyle=G.total>=300?COL.good:COL.vp;ctx.fillText(G.total>=300?'사건 해결! 숨은 소실점을 모두 찾았어요.':'300점까지 조금 더! [다시 조사]로 재도전해요.',W/2,H/2+26);ctx.textAlign='left';return;}
+  if(G.over){ctx.textAlign='center';ctx.fillStyle=COL.ink;ctx.font='700 40px Gaegu, cursive';ctx.fillText(`총점 ${G.total} / ${G.n*100}`,W/2,H/2-8);ctx.font='17px "Gowun Dodum", sans-serif';ctx.fillStyle=G.total>=300?COL.good:COL.vp;ctx.fillText(G.total>=300?'사건 해결! 아래 [인증서 받으러 가기]를 눌러요.':'300점까지 조금 더! [다시 조사]로 재도전해요.',W/2,H/2+26);ctx.textAlign='left';return;}
   if(c.type===1){const g=onePt(tgt,c.box.x*W,c.box.y*H,c.box.w*W,c.box.h*H,c.t);if(done||G.hint){ctx.save();ctx.strokeStyle=COL.guide;ctx.setLineDash([5,5]);ctx.lineWidth=1.3;g.F.forEach((p,i)=>seg(ctx,g.B[i],done?tgt:lerp(p,tgt,.38)));ctx.restore();}drawOneBox(ctx,g,tgt,{guides:false});}
   else{const hy=c.hy*H,V1=[c.v1*W,hy],V2=[c.v2*W,hy];const g=twoPt(V1,V2,[c.ex*W,c.top*H],[c.ex*W,c.bot*H],c.tL,c.tR);if(done||G.hint){ctx.save();ctx.strokeStyle=COL.guide;ctx.setLineDash([5,5]);ctx.lineWidth=1.3;[g.Lt,g.Lb].forEach(b=>seg(ctx,b,done?V1:lerp(b,V1,.4)));ctx.restore();}drawTwoBox(ctx,g,V1,V2,{guides:false});if(done){ctx.save();ctx.strokeStyle=COL.guide;ctx.globalAlpha=.6;ctx.lineWidth=1.4;seg(ctx,[0,hy],[W,hy]);ctx.restore();}}
   if(done){const gp=G.guess;ctx.save();ctx.strokeStyle=COL.muted;ctx.setLineDash([2,4]);ctx.lineWidth=1.4;seg(ctx,gp,tgt);ctx.restore();ctx.save();ctx.strokeStyle=COL.ink;ctx.lineWidth=2.6;ctx.lineCap='round';seg(ctx,[gp[0]-8,gp[1]-8],[gp[0]+8,gp[1]+8]);seg(ctx,[gp[0]-8,gp[1]+8],[gp[0]+8,gp[1]-8]);ctx.restore();vpMark(ctx,tgt,'숨은 소실점',COL.vp,{dx:14,dy:-20});tag(ctx,'내 추리',gp[0]+12,gp[1]+18,{size:15});}
   else{ctx.fillStyle=COL.muted;ctx.font='13px "Gowun Dodum", sans-serif';ctx.fillText('사건 현장 #'+(G.i+1),12,20);}}
 (function(){const cv=$('#cvGame');cv.style.cursor='crosshair';cv.addEventListener('pointerdown',e=>{if(!G.cur||G.guess||G.over)return;const r=cv.getBoundingClientRect();const p=pos(e,cv);G.guess=p;const d=dist(p,gameTarget(r.width,r.height));const s=Math.max(0,Math.round(100-d/r.width*450)-(G.hint?15:0));G.total+=s;
   $('#gameFb').innerHTML=(s>=90?'<b style="color:var(--good)">명탐정!</b> ':s>=65?'<b style="color:var(--good)">아주 가까워요.</b> ':s>=35?'<b>조금 아쉬워요.</b> ':'<b style="color:var(--vp)">범인이 빠져나갔어요.</b> ')+`${s}점${G.hint?' (힌트 −15)':''}. 파란 점선을 따라가면 선들이 한 점에서 만나요.`;
-  $('#gameNext').disabled=false;$('#gameHint').disabled=true;scoreUI();drawGame();});})();
+  $('#gameNext').disabled=false;nudge($('#gameNext'),true);$('#gameHint').disabled=true;scoreUI();drawGame();});})();
 $('#gameHint').addEventListener('click',()=>{if(G.guess)return;G.hint=true;$('#gameHint').disabled=true;drawGame();});
-$('#gameNext').addEventListener('click',()=>{if(G.over){G.i=0;G.total=0;G.seed+=977;newRound();return;}G.i++;if(G.i>=G.n){G.over=true;scoreUI();$('#gameFb').textContent='';$('#gameNext').textContent='다시 조사';$('#gameNext').disabled=false;$('#gameHint').disabled=true;drawGame();
-  const had=S.done[5].play;complete(5,'play');if(G.total>=300)setTimeout(()=>complete(5,'score'),had?0:1600);else setTimeout(()=>say(5,[['dot',CH[4].react.fail]],true),had?0:1600);return;}newRound();});
+function gameRestart(){G.i=0;G.total=0;G.seed+=977;$('#gameRetry').hidden=true;$('#gameHint').hidden=false;newRound();}
+$('#gameRetry').addEventListener('click',gameRestart);
+$('#gameNext').addEventListener('click',()=>{nudge($('#gameNext'),false);
+  if(G.over){if(G.total>=300){location.hash=unlocked('end')?'ending':'map';return;}gameRestart();return;}
+  G.i++;if(G.i<G.n){newRound();return;}
+  G.over=true;const pass=G.total>=300;scoreUI();$('#gameFb').innerHTML=pass?'<b style="color:var(--good)">사건 해결!</b> 이제 마을 시청에서 인증서를 받으세요. 더 연습하고 싶으면 [다시 조사]를 눌러도 돼요.':'300점에 조금 못 미쳤어요. [다시 조사]로 한 번 더 도전해 봐요!';
+  $('#gameHint').hidden=true;$('#gameRetry').hidden=!pass;$('#gameNext').textContent=pass?'인증서 받으러 가기 ▶':'다시 조사';$('#gameNext').disabled=false;nudge($('#gameNext'),true);drawGame();
+  const had=S.done[5].play;complete(5,'play');if(pass)setTimeout(()=>complete(5,'score'),had?0:1600);else setTimeout(()=>say(5,[['dot',CH[4].react.fail]],true),had?0:1600);});
 
 /* ═════════ 엔딩: 인증서 + 연습장 ═════════ */
 $('#certName').value=S.name||'';$('#certName').addEventListener('input',e=>{S.name=e.target.value;save();});
