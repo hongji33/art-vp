@@ -106,6 +106,7 @@ main{padding-block:14px 40px}
 .ccard .st{grid-column:1/-1;font-size:13px;font-weight:700}
 
 .settings{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:14px;color:var(--muted)}
+.tpanel{display:grid;gap:12px;background:color-mix(in srgb,var(--mark) 10%,var(--paper));border:2px dashed var(--mark);border-radius:12px;padding:14px 16px}
 details.teacher{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:4px 16px}
 details.teacher summary{cursor:pointer;font-family:var(--font-hand);font-size:22px;font-weight:700;padding-block:10px}
 .tscroll{overflow-x:auto;padding-bottom:12px}
@@ -313,6 +314,9 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
   </div>
   <div class="mapboard" id="mapboard"><canvas id="cvMap" aria-hidden="true"></canvas></div>
   <div class="cards" id="cards"></div>
+  <div class="tpanel" id="teacherPanel" hidden>
+    <div class="row" style="justify-content:space-between"><h3 style="font-size:24px">선생님 전용</h3><button class="btn" id="tpClose" type="button">닫기</button></div>
+    <p class="note">이 칸은 주소 끝에 <b>#teacher</b>를 붙여 열었을 때만 보여요. 학생 화면에는 나타나지 않아요.</p>
   <div class="settings">
     <label class="ctl" for="teacherMode"><input type="checkbox" id="teacherMode"> 선생님 모드 (모든 장소 바로 열기)</label>
     <button class="btn" id="resetBtn" type="button">진행 상황 처음부터</button>
@@ -332,6 +336,7 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
       </table>
     </div>
   </details>
+  </div>
 </section>
 
 <!-- ═════ CH1 기찻길 역 ═════ -->
@@ -1023,7 +1028,7 @@ $('#gameNext').addEventListener('click',()=>{nudge($('#gameNext'),false);
   const had=S.done[5].play;complete(5,'play');if(pass)setTimeout(()=>complete(5,'score'),had?0:1600);else setTimeout(()=>say(5,[['dot',CH[4].react.fail]],true),had?0:1600);});
 
 /* ═════════ 엔딩: 인증서 + 연습장 ═════════ */
-$('#certName').value=S.name||'';$('#certName').addEventListener('input',e=>{S.name=e.target.value;save();});
+if(S.name){S.name='';save();}$('#certName').value='';/* 이름은 저장하지 않음: 화면을 열 때마다 빈칸 */
 $('#certDate').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
 const D={mode:1,vps:[[.5,.4]],lines:[],tool:'ruler',guide:true,cur:null,drag:null};
 function padSnap(S0,P,W,H){const d=[P[0]-S0[0],P[1]-S0[1]];const Lg=Math.hypot(d[0],d[1]);if(Lg<2)return{end:S0,dir:null};const cands=[];D.vps.forEach(v=>{const vp=[v[0]*W,v[1]*H];const u=[vp[0]-S0[0],vp[1]-S0[1]];const ul=Math.hypot(u[0],u[1]);if(ul>8)cands.push([u[0]/ul,u[1]/ul]);});cands.push([0,1]);if(D.mode===1)cands.push([1,0]);
@@ -1255,7 +1260,9 @@ CH.forEach(c=>{setupDialog(c.id);buildMissions(c);});setupDialog('end');sceneSta
 $('#heroPen').innerHTML=CHARS.pen.svg;$('#resetPor').innerHTML=CHARS.pen.svg;
 const DRAW={map:drawMap,ch1:drawLearn,ch2:()=>{drawOne();oneInfo();},ch3:()=>{drawTwo();twoInfo();},ch4:()=>{drawRoom();drawThumbs();},ch5:()=>{if(!G.cur)newRound();else drawGame();},ending:()=>{drawPad();drawEx();}};
 let current='map';const visited={};
-function show(id){if(!DRAW[id])id='map';
+let teacherOpen=false;
+function tpUI(){$('#teacherPanel').hidden=!(teacherOpen||S.teacher);}
+function show(id){if(id==='teacher'){teacherOpen=true;id='map';tpUI();setTimeout(()=>$('#teacherPanel').scrollIntoView({behavior:'smooth',block:'start'}),80);}if(!DRAW[id])id='map';
   if(/^ch\d$/.test(id)&&!unlocked(+id[2])){toast('아직 잠겨 있어요. 이전 장소의 부탁을 먼저 해결해요!');location.replace('#map');id='map';}
   if(id==='ending'&&!unlocked('end')){toast('다섯 장소를 모두 해결하면 열려요!');location.replace('#map');id='map';}
   $('#clearModal').hidden=true;current=id;Object.keys(DRAW).forEach(k=>{$('#v-'+k).hidden=k!==id;});window.scrollTo(0,0);
@@ -1272,6 +1279,8 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',reth
 new MutationObserver(retheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{R.cache=null;DRAW[current]();});
 refreshGlobal();
+$('#tpClose').addEventListener('click',()=>{teacherOpen=false;if(S.teacher){S.teacher=false;save();refreshGlobal();}tpUI();if(location.hash==='#teacher')history.replaceState(null,'','#map');});
+tpUI();
 show(location.hash.slice(1)||'map');
 })();
 </script>
