@@ -122,6 +122,7 @@ td.min{white-space:nowrap;font-variant-numeric:tabular-nums}
 .chap-head > div:first-child{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap}
 .chap-head h2{font-size:clamp(26px,3.4vw,34px)}
 .chap-head .sub{color:var(--muted);font-size:15px}
+.nextch{flex:none}
 .pips{margin-left:auto;display:flex;gap:6px;align-items:center;font-family:var(--font-hand);font-weight:700;font-size:19px}
 .pips i{width:14px;height:14px;border-radius:50%;border:2px solid var(--cc);display:inline-block}
 .pips i.on{background:var(--cc)}
@@ -235,6 +236,10 @@ td.min{white-space:nowrap;font-variant-numeric:tabular-nums}
 .cert input{font-family:var(--font-hand);font-size:32px;font-weight:700;text-align:center;border:0;border-bottom:2px solid var(--ink);background:transparent;color:var(--ink);width:min(320px,100%);padding:2px 6px}
 .cert input::placeholder{color:var(--lock)}
 .cert p{max-width:52ch;font-size:16px}
+.cstamp{position:absolute;right:clamp(16px,5vw,56px);top:clamp(70px,12vw,120px);width:clamp(84px,14vw,124px);color:var(--vp);transform:rotate(-14deg);opacity:.85;mix-blend-mode:multiply}
+:root[data-theme="dark"] .cstamp{mix-blend-mode:normal}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cstamp{mix-blend-mode:normal}}
+.cstamp svg{width:100%;height:auto;display:block}
 .cert .bdgs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .cert .bdgs .bdg{width:52px;height:52px}
 .cert .sig{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;font-family:var(--font-hand);font-size:18px;color:var(--muted)}
@@ -466,6 +471,7 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
     <input id="certName" type="text" maxlength="14" placeholder="이름" autocomplete="off">
     <p>위 학생은 납작 마을의 다섯 장소에서 <b>수평선, 1점 투시, 2점 투시, 스케치, 소실점 찾기</b>의 비밀을 모두 풀어 마을에 깊이를 되찾아 주었기에 이 인증서를 드립니다.</p>
     <div class="bdgs" id="certBadges"></div>
+    <div class="cstamp" id="certStamp" hidden><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="60" cy="60" r="45" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="60" y="44" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor" font-family="Gowun Dodum,sans-serif">2점 · 1점 투시</text><text x="60" y="70" text-anchor="middle" font-size="22" font-weight="700" fill="currentColor" font-family="Gaegu,cursive">모두 완성</text><text x="60" y="90" text-anchor="middle" font-size="10" fill="currentColor" font-family="Gowun Dodum,sans-serif">언덕 위 화실 ★</text></svg></div>
     <div class="date" id="certDate"></div>
     <div class="sig"><span>연필이</span><span>레일 역장</span><span>창고지기 모모</span><span>코너 박사</span><span>선우 작가</span><span>도트 탐정</span></div>
   </div>
@@ -596,9 +602,9 @@ const CH=[
   react:{top:'좋아, 내려다본 상자! 책상 위 주사위가 딱 이렇게 보이지.',bottom:'올려다보니 <b>밑면</b>이 보이는군. 하늘에 뜬 열기구 상자 같아!',cross:'바로 이거야! 수평선이 건물을 가로지르면 길에 서서 빌딩을 보는 장면이 되지.',close:'으악, 찌그러졌다! 소실점이 너무 가까우면 이렇게 돼. 그래서 화가들은 소실점을 <b>멀리, 종이 밖에도</b> 둔다네.',ok:'정답! 세로선은 <b>똑바로</b>. 이게 2점 투시의 약속이야.',no:'아니야! 내가 처음에 꼭 기억하라고 한 말이 뭐였지?'},
   clear:'거리에 빌딩이 우뚝 섰어! 2점 투시 배지를 받아. 언덕 위 화실에서 선우 작가가 기다려.'},
  {id:4,place:'언덕 위 화실',who:'sunwoo',badge:'스케치 배지',concept:'따라 그리기',desc:'배운 원리로 내 방 또는 시골길 풍경을 처음부터 끝까지 그려요.',
-  missions:[{m:'one',t:'그림 한 장을 <b>8단계 끝까지</b> 완성하기'},{m:'both',t:'두 그림 모두 완성하기',bonus:true}],
+  missions:[{m:'one',t:'그림 한 장을 <b>8단계 끝까지</b> 완성하기'},{m:'both',t:'두 그림 모두 완성하기 → 인증서에 <b>특별 도장</b>!',bonus:true}],
   intro:[['sunwoo','어서 와요. 납작 마법 때문에 제 스케치북 그림까지 다 지워졌어요.'],['sunwoo','같이 처음부터 다시 그려 볼래요? 실내를 그리고 싶으면 <b>내 방 POV</b>(2점 투시), 바깥을 그리고 싶으면 <b>시골길 풍경</b>(1점 투시)을 골라요.'],['pen','화면을 한 단계씩 보면서 <b>스케치북에도 똑같이</b> 따라 그려 봐. [다음 단계]를 누르면 돼!']],
-  react:{room:'내 방이 완성됐네요! 소실점 두 개로 벽과 침대가 진짜 입체가 됐어요.',land:'시골길 완성! 소실점 하나로 길과 나무가 저 멀리까지 이어졌어요.',both:'두 그림 모두 완성이라니, 진짜 화가가 다 됐네요!'},
+  react:{room:'내 방이 완성됐네요! 소실점 두 개로 벽과 침대가 진짜 입체가 됐어요.',land:'시골길 완성! 소실점 하나로 길과 나무가 저 멀리까지 이어졌어요.',both:'두 그림 모두 완성이라니, 진짜 화가가 다 됐네요! 인증서에 <b>특별 도장</b>을 찍어 드릴게요. 위의 [다음 장소] 버튼으로 탐정 사무소에 가 봐요!'},
   clear:'정말 멋진 그림이에요. 이 스케치 배지는 당신 거예요! 마지막 장소는 탐정 사무소예요.'},
  {id:5,place:'탐정 사무소',who:'dot',badge:'소실점 탐정 배지',concept:'소실점 찾기',desc:'납작 마법사가 숨긴 소실점을 찾아 마지막 사건을 해결해요.',
   missions:[{m:'play',t:'사건 <b>6개</b> 모두 조사하기'},{m:'score',t:'<b>300점 이상</b>으로 사건 해결하기'}],
@@ -633,12 +639,14 @@ function buildMissions(c){
   ul.innerHTML=h;
   if(c.quiz)ul.querySelectorAll('.opts button').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.a;if(i===c.quiz.ok){b.classList.add('yes');complete(c.id,'quiz','ok');}else{b.classList.add('no');say(c.id,[[c.who,c.react.no]],true);}}));
   const head=$(`.chap-head[data-ch="${c.id}"]`);head.style.setProperty('--cc',`var(--c${c.id})`);
-  head.innerHTML=`<div><span class="chip">CHAPTER ${c.id} · ${c.concept}</span><h2>${c.place}</h2></div><div class="pips" id="pips${c.id}"></div>`;
+  const nx=c.id<5?{h:'#ch'+(c.id+1),t:`다음 장소: ${CH[c.id].place} ▶`}:{h:'#ending',t:'인증서 받으러 가기 ▶'};
+  head.innerHTML=`<div><span class="chip">CHAPTER ${c.id} · ${c.concept}</span><h2>${c.place}</h2></div><div class="pips" id="pips${c.id}"></div><a class="btn primary nextch" id="next${c.id}" href="${nx.h}" hidden>${nx.t}</a>`;
   missionUI(c.id);
 }
 function missionUI(id){const c=CH[id-1],d=S.done[id];const req=required(c);
   $$('#ms'+id+' li').forEach(li=>{li.classList.toggle('done',!!d[li.dataset.m]);});
   const q=$('#ms'+id+' li.quiz');if(q){const others=c.missions.filter(m=>!m.bonus).every(m=>d[m.m]);q.classList.toggle('locked',!others&&!d.quiz);if(d.quiz)q.querySelectorAll('.opts button').forEach(b=>{if(+b.dataset.a===c.quiz.ok)b.classList.add('yes');});}
+  {const nb=$('#next'+id);if(nb){nb.hidden=!S.cleared[id];nudge(nb,!!S.cleared[id]);}}
   const n=req.filter(m=>d[m]).length;$('#pips'+id).innerHTML=req.map(m=>`<i class="${d[m]?'on':''}"></i>`).join('')+` <span>${n}/${req.length}</span>`;
   const sec=$(`[data-secret="${id}"]`);if(sec)sec.style.setProperty('--cc',`var(--c${id})`);
   secretUI(id);
@@ -658,6 +666,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#clearModal').h
 function refreshGlobal(){
   $('#shelf').innerHTML=CH.map(c=>badge(c.id,!!S.cleared[c.id])).join('');
   $('#certBadges').innerHTML=CH.map(c=>badge(c.id,!!S.cleared[c.id])).join('');
+  $('#certStamp').hidden=!S.done[4].both;
   const cur=currentCh();const n=Object.keys(S.cleared).filter(k=>S.cleared[k]).length;
   const sb=$('#startBtn');if(n===0){sb.textContent='모험 시작하기';sb.href='#ch1';}else if(cur==='end'){sb.textContent='엔딩 다시 보기';sb.href='#ending';}else{sb.textContent=`이어서 하기 · ${CH[cur-1].place}`;sb.href='#ch'+cur;}
   $('#progressNote').textContent=`배지 ${n} / 5`;
