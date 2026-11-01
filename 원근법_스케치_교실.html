@@ -1033,7 +1033,7 @@ function drawPad(){const cv=$('#cvPad');const {ctx,W,H}=fit(cv);if(W<20)return;{
   up(){if(D.cur){const a=D.cur.pts[0],b=D.cur.pts[D.cur.pts.length-1];if(D.cur.pts.length>2||Math.hypot(a[0]-b[0],a[1]-b[1])>.01)D.lines.push({kind:D.cur.kind,pts:D.cur.pts});}D.cur=null;D.drag=null;drawPad();},
   hover(p){const r=cv.getBoundingClientRect();cv.style.cursor=D.vps.some(v=>dist(p,[v[0]*r.width,v[1]*r.height])<20)?'grab':'crosshair';}});})();
 function setMode(m){D.mode=m;D.vps=m===1?[[.5,.4]]:[[.06,.4],[.94,.4]];$$('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.mode===m)));drawPad();}
-$$('[data-mode]').forEach(b=>b.addEventListener('click',()=>{const m=+b.dataset.mode;if(GD.key&&GUIDES[GD.key].m!==m){GD.key=null;guideUI();}setMode(m);}));
+$$('[data-mode]').forEach(b=>b.addEventListener('click',()=>{const m=+b.dataset.mode;if(GD.key&&GUIDES[GD.key].m!==m){stashGuide();SAVED[GD.key]={lines:D.lines.slice(),vps:D.vps.map(p=>p.slice()),step:GD.step};GD.key=null;guideUI();}setMode(m);}));
 $$('[data-tool]').forEach(b=>b.addEventListener('click',()=>{D.tool=b.dataset.tool;$$('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));}));
 $('#padUndo').addEventListener('click',()=>{D.lines.pop();drawPad();});
 $('#padClear').addEventListener('click',()=>{D.lines=[];drawPad();});
@@ -1069,7 +1069,10 @@ function guideUI(){const box=$('#guidebox');$$('.chips [data-ch]').forEach(x=>x.
   $('#gSteps').innerHTML=g.steps.map((t,i)=>`<li data-i="${i}" class="${i<GD.step?'past':i===GD.step?'cur':''}">${t}</li>`).join('');
   $$('#gSteps li').forEach(li=>li.addEventListener('click',()=>{GD.step=+li.dataset.i;guideUI();drawPad();}));
   $('#gPrev').disabled=GD.step===0;$('#gNext').textContent=GD.step===g.steps.length-1?'처음부터 ↺':'다음 단계 ▶';drawEx();}
-function selectGuide(k){const g=GUIDES[k];GD.key=k;GD.step=0;D.mode=g.m;D.vps=g.vps.map(p=>p.slice());D.lines=[];$$('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.mode===g.m)));guideUI();drawPad();}
+const SAVED={};
+function stashGuide(){if(GD.key)SAVED[GD.key]={lines:D.lines,vps:D.vps.map(p=>p.slice()),step:GD.step};}
+function selectGuide(k){if(GD.key===k)return;const prev=GD.key,had=D.lines.length>0;stashGuide();const g=GUIDES[k],sv=SAVED[k];GD.key=k;GD.step=sv?sv.step:0;D.mode=g.m;D.vps=sv?sv.vps.map(p=>p.slice()):g.vps.map(p=>p.slice());D.lines=sv?sv.lines:[];
+  if(prev&&had)toast(`'${GUIDES[prev].title}' 그림은 그대로 보관했어요. 다시 누르면 이어서 그릴 수 있어요`);$$('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.mode===g.m)));guideUI();drawPad();}
 $$('.chips [data-ch]').forEach(b=>b.addEventListener('click',()=>selectGuide(b.dataset.ch)));
 $('#gPrev').addEventListener('click',()=>{if(GD.step>0){GD.step--;guideUI();drawPad();}});
 $('#gNext').addEventListener('click',()=>{const n=GUIDES[GD.key].steps.length;GD.step=GD.step===n-1?0:GD.step+1;guideUI();drawPad();});
