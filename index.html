@@ -271,6 +271,22 @@ td.min{white-space:nowrap;font-variant-numeric:tabular-nums}
 .mbox h2{font-size:36px}
 .mbox .say{display:flex;gap:10px;align-items:center;text-align:left;font-family:var(--font-hand);font-size:20px;line-height:1.35}
 .mbox .say .por{width:52px;height:52px}
+.donebar{display:grid;gap:10px;background:color-mix(in srgb,var(--good) 12%,var(--paper));border:3px solid var(--good);border-radius:14px;padding:14px 18px}
+.donebar .hand{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-family:var(--font-hand);font-weight:700;font-size:clamp(24px,3vw,32px);color:var(--good);line-height:1.2}
+.donebar .hand .big{font-size:1.3em}
+.chall{background:color-mix(in srgb,var(--mark) 22%,var(--paper));border:2px dashed color-mix(in srgb,var(--mark) 80%,var(--ink));border-radius:12px;padding:10px 14px;text-align:left}
+.chall h4{font-size:17px;margin:0 0 4px}
+.chall ul{margin:0;padding-left:20px;display:grid;gap:3px;font-size:15.5px;line-height:1.45}
+.keyrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
+.keyrow input{font:inherit;font-size:20px;padding:7px 14px;border:2px solid var(--ink);border-radius:999px;background:var(--card);color:var(--ink);width:min(220px,60vw);text-align:center}
+.keyrow input:focus{outline:3px solid var(--mark);outline-offset:1px}
+.keymsg{min-height:1.4em;font-size:15px;color:var(--vp);font-weight:700}
+.keymsg.ok{color:var(--good)}
+.mbox .doneline{width:100%;background:color-mix(in srgb,var(--good) 14%,var(--paper));border:2px solid var(--good);color:var(--good);border-radius:12px;padding:8px 10px;font-family:var(--font-hand);font-weight:700;font-size:24px;line-height:1.25}
+.mbox.wide{max-width:540px}
+.keytable{border-collapse:collapse;font-size:15px}
+.keytable td,.keytable th{border:1px solid var(--line);padding:4px 12px;text-align:left}
+.keytable b{font-size:17px;color:var(--vp)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:15px;box-shadow:var(--shadow)}
 footer{color:var(--muted);font-size:13px;padding-block:0 30px}
 .tv{position:fixed;inset:0;z-index:70;background:rgba(8,10,16,.92);display:grid;place-items:center;padding:calc(12px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
@@ -320,6 +336,11 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
   <div class="settings">
     <label class="ctl" for="teacherMode"><input type="checkbox" id="teacherMode"> 선생님 모드 (모든 장소 바로 열기)</label>
     <button class="btn" id="resetBtn" type="button">진행 상황 처음부터</button>
+  </div>
+  <div>
+    <h3 style="font-size:20px;margin:4px 0 6px">🔑 장소별 열쇠 코드</h3>
+    <p class="note" style="margin:0 0 6px">반 전체가 앞 장소를 마치면 칠판이나 화면에 코드를 알려 주세요. 학생이 입력하면 그 장소가 열려요. 순서를 건너뛰어도 돼요(예: 3 빌딩 거리 다음에 바로 ‘탐정’).</p>
+    <table class="keytable" id="keyTable"></table>
   </div>
   <details class="teacher">
     <summary>선생님용 · 45분 수업 흐름 예시</summary>
@@ -514,12 +535,19 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
 </main>
 
 <div class="modal" id="clearModal" hidden role="dialog" aria-modal="true" aria-labelledby="clearTitle">
-  <div class="mbox">
+  <div class="mbox wide">
     <div class="stamp" id="clearStamp"></div>
     <div class="chip" id="clearChip"></div>
     <h2 id="clearTitle"></h2>
     <div class="say"><div class="por" id="clearPor"></div><p id="clearSay"></p></div>
-    <div class="row" style="justify-content:center"><button class="btn" id="clearStay" type="button">여기서 더 실험하기</button><button class="btn" id="clearMap" type="button">지도 보기</button><button class="btn primary" id="clearNext" type="button">다음 장소로</button></div>
+    <div class="doneline">✋ 완료! 손을 들어 선생님께 알려 주세요</div>
+    <div class="chall" id="clearChall"></div>
+    <div id="clearKeyArea" style="display:grid;gap:6px;width:100%">
+      <p style="margin:0;font-size:15px">🔑 다음 장소는 <b>선생님이 알려 주는 열쇠 코드</b>로 열려요.</p>
+      <div class="keyrow"><input id="clearKey" type="text" autocomplete="off" placeholder="열쇠 코드" aria-label="열쇠 코드"><button class="btn primary" id="clearKeyGo" type="button">열기</button></div>
+      <div class="keymsg" id="clearKeyMsg" aria-live="polite"></div>
+    </div>
+    <div class="row" style="justify-content:center"><button class="btn primary" id="clearStay" type="button">⭐ 도전 미션 하기</button><button class="btn" id="clearMap" type="button">지도 보기</button><button class="btn primary" id="clearNext" type="button" hidden>다음 장소로</button></div>
   </div>
 </div>
 <div class="tv" id="tv" hidden role="dialog" aria-modal="true" aria-label="오프닝 뉴스 영상">
@@ -534,6 +562,16 @@ footer{color:var(--muted);font-size:13px;padding-block:0 30px}
     <h2 id="resetTitle" style="font-size:30px">처음부터 다시 할까요?</h2>
     <p>모은 배지, 미션 기록, 인증서에 쓴 이름이 모두 지워지고 기찻길 역부터 다시 시작해요.</p>
     <div class="row" style="justify-content:center"><button class="btn" id="resetNo" type="button">아니요, 계속할래요</button><button class="btn primary" id="resetYes" type="button">처음부터 시작</button></div>
+  </div>
+</div>
+<div class="modal" id="keyModal" hidden role="dialog" aria-modal="true" aria-labelledby="keyTitle">
+  <div class="mbox" style="--cc:var(--mark)">
+    <div style="font-size:56px;line-height:1">🔒</div>
+    <h2 id="keyTitle" style="font-size:28px">열쇠 코드가 필요해요</h2>
+    <p id="keyDesc" style="margin:0">선생님이 알려 주는 열쇠 코드를 입력하면 다음 장소가 열려요.</p>
+    <div class="keyrow"><input id="keyInput" type="text" autocomplete="off" placeholder="열쇠 코드" aria-label="열쇠 코드"><button class="btn primary" id="keyGo" type="button">열기</button></div>
+    <div class="keymsg" id="keyMsg" aria-live="polite"></div>
+    <button class="btn" id="keyClose" type="button">닫고 기다리기</button>
   </div>
 </div>
 <div class="toast" id="toast" hidden></div>
@@ -620,10 +658,23 @@ const CH=[
 
 /* ═════════ 진행 상태 ═════════ */
 const KEY='persp-quest-v1';
-let S={cleared:{},done:{1:{},2:{},3:{},4:{},5:{}},name:'',teacher:false};
-try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object.assign(S,o);for(let i=1;i<=5;i++)S.done[i]=S.done[i]||{};}}catch(e){}
+let S={cleared:{},done:{1:{},2:{},3:{},4:{},5:{}},name:'',teacher:false,keys:{}};
+try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object.assign(S,o);S.keys=S.keys||{};for(let i=1;i<=5;i++)S.done[i]=S.done[i]||{};}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-function unlocked(id){if(S.teacher)return true;if(id===1)return true;if(id==='end')return !!S.cleared[5];return !!S.cleared[id-1];}
+/* 열쇠 코드: 선생님이 알려 줄 때만 다음 장소가 열려요 (선생님 모드는 모두 열림) */
+const KEYS={2:'상자',3:'빌딩',4:'화실',5:'탐정'};
+const CHALL={
+ 1:['눈높이를 개미 → 사람 → 새로 바꿔 가며 기찻길을 <b>종이에 3장</b> 그려 보기','눈높이 슬라이더를 움직이며 소실점이 <b>어디로 움직이는지</b> 짝에게 설명하기'],
+ 2:['상자를 <b>5개 이상</b> 추가해 나만의 택배 창고 만들기 (수평선 위·아래에 골고루!)','상자 하나를 골라 <b>종이에 1점 투시로</b> 따라 그려 보기'],
+ 3:['두 소실점을 움직여 <b>가장 높아 보이는 빌딩</b> 만들기','가이드선을 끄고도 2점 투시처럼 보이는지 확인하고, <b>종이에</b> 따라 그려 보기'],
+ 4:['두 그림 <b>모두</b> 완성해서 특별 도장 받기','연필 가이드선을 끄고 내 스케치북 그림과 비교해 보기'],
+ 5:['<b>최고 점수</b>에 다시 도전하기 (다시 조사)','교실 안에서 소실점이 보이는 곳을 <b>3군데</b> 찾아 활동지에 적기']};
+function hasKey(id){return !!(S.keys&&S.keys[id]);}
+function unlocked(id){if(S.teacher)return true;if(id===1)return true;if(id==='end')return !!S.cleared[5];return hasKey(id);}
+function normKey(v){return String(v||'').replace(/\s+/g,'').trim();}
+function tryKey(v){const k=normKey(v);if(!k)return {err:'열쇠 코드를 입력해 주세요.'};for(const id in KEYS){if(KEYS[id]===k){S.keys=S.keys||{};S.keys[id]=1;save();refreshGlobal();CH.forEach(c=>missionUI(c.id));return {id:+id};}}return {err:'열쇠가 맞지 않아요. 선생님의 신호를 기다려요!'};}
+function challHTML(id){return `<h4>⭐ 도전 미션 · 기다리는 동안 해 봐요</h4><ul>${CHALL[id].map(t=>`<li>${t}</li>`).join('')}<li>🤝 <b>친구 도우미</b>: 옆 친구에게 정답 말고 <b>힌트만</b> 알려 주기</li></ul>`;}
+function nextOf(id){return id<5?id+1:'end';}
 function currentCh(){for(let i=1;i<=5;i++)if(!S.cleared[i])return i;return 'end';}
 function required(c){return c.missions.filter(m=>!m.bonus).map(m=>m.m).concat(c.quiz?['quiz']:[]);}
 
@@ -646,12 +697,16 @@ function buildMissions(c){
   const head=$(`.chap-head[data-ch="${c.id}"]`);head.style.setProperty('--cc',`var(--c${c.id})`);
   const nx=c.id<5?{h:'#ch'+(c.id+1),t:`다음 장소: ${CH[c.id].place} ▶`}:{h:'#ending',t:'인증서 받으러 가기 ▶'};
   head.innerHTML=`<div><span class="chip">CHAPTER ${c.id} · ${c.concept}</span><h2>${c.place}</h2></div><div class="pips" id="pips${c.id}"></div><a class="btn primary nextch" id="next${c.id}" href="${nx.h}" hidden>${nx.t}</a>`;
+  let db=$('#done'+c.id);if(!db){db=document.createElement('div');db.id='done'+c.id;db.className='donebar';db.hidden=true;head.insertAdjacentElement('afterend',db);}
+  db.innerHTML=`<div class="hand"><span class="big">✋</span> 완료! 손을 들어 선생님께 알려 주세요 <button class="btn primary" type="button" data-keyopen="${c.id}" style="margin-left:auto;font-size:18px;padding:8px 18px">🔑 열쇠 코드 입력</button></div><div class="chall">${challHTML(c.id)}</div>`;
+  db.querySelector('[data-keyopen]').addEventListener('click',()=>openKey(nextOf(c.id)));
   missionUI(c.id);
 }
 function missionUI(id){const c=CH[id-1],d=S.done[id];const req=required(c);
   $$('#ms'+id+' li').forEach(li=>{li.classList.toggle('done',!!d[li.dataset.m]);});
   const q=$('#ms'+id+' li.quiz');if(q){const others=c.missions.filter(m=>!m.bonus).every(m=>d[m.m]);q.classList.toggle('locked',!others&&!d.quiz);if(d.quiz)q.querySelectorAll('.opts button').forEach(b=>{if(+b.dataset.a===c.quiz.ok)b.classList.add('yes');});}
-  {const nb=$('#next'+id);if(nb){nb.hidden=!S.cleared[id];nudge(nb,!!S.cleared[id]);}}
+  {const nb=$('#next'+id);const nx=nextOf(id);const open=!!S.cleared[id]&&unlocked(nx);if(nb){nb.hidden=!open;nudge(nb,open);}
+   const db=$('#done'+id);if(db){const show=!!S.cleared[id]&&!open;db.hidden=!show;}}
   const n=req.filter(m=>d[m]).length;$('#pips'+id).innerHTML=req.map(m=>`<i class="${d[m]?'on':''}"></i>`).join('')+` <span>${n}/${req.length}</span>`;
   const sec=$(`[data-secret="${id}"]`);if(sec)sec.style.setProperty('--cc',`var(--c${id})`);
   secretUI(id);
@@ -661,9 +716,22 @@ function complete(id,m,reactKey){const d=S.done[id];if(d[m])return;d[m]=1;save()
   if(!S.cleared[id]&&required(c).every(k=>d[k])){S.cleared[id]=true;save();setTimeout(()=>{showClear(id);refreshGlobal();missionUI(id);},reduce?200:1400);}else refreshGlobal();}
 
 /* ═════════ 클리어 모달 ═════════ */
-function showClear(id){const c=CH[id-1];const m=$('#clearModal');m.style.setProperty('--cc',`var(--c${id})`);$('#clearStamp').innerHTML=badge(id,true);$('#clearChip').textContent=`CHAPTER ${id} 클리어`;$('#clearTitle').textContent=c.badge+' 획득!';$('#clearPor').innerHTML=CHARS[c.who].svg;$('#clearSay').textContent=c.clear;$('#clearNext').textContent=id===5?'엔딩 보기':'다음 장소로';$('#clearNext').dataset.to=id===5?'ending':'ch'+(id+1);m.hidden=false;$('#clearNext').focus();}
+function showClear(id){const c=CH[id-1];const m=$('#clearModal');m.style.setProperty('--cc',`var(--c${id})`);$('#clearStamp').innerHTML=badge(id,true);$('#clearChip').textContent=`CHAPTER ${id} 클리어`;$('#clearTitle').textContent=c.badge+' 획득!';$('#clearPor').innerHTML=CHARS[c.who].svg;$('#clearSay').textContent=c.clear;$('#clearNext').textContent=id===5?'엔딩 보기':'다음 장소로';$('#clearNext').dataset.to=id===5?'ending':'ch'+(id+1);
+  $('#clearChall').innerHTML=challHTML(id);const nx=nextOf(id);const open=unlocked(nx);
+  $('#clearKeyArea').hidden=open;$('#clearNext').hidden=!open;$('#clearKey').value='';$('#clearKeyMsg').textContent='';$('#clearKeyMsg').className='keymsg';
+  m.hidden=false;(open?$('#clearNext'):$('#clearStay')).focus();}
+function clearKeyTry(){const r=tryKey($('#clearKey').value);const msg=$('#clearKeyMsg');if(r.err){msg.className='keymsg';msg.textContent=r.err;return;}msg.className='keymsg ok';msg.textContent='🔓 열렸어요! '+CH[r.id-1].place+'(으)로 출발!';setTimeout(()=>{$('#clearModal').hidden=true;location.hash='ch'+r.id;},700);}
+$('#clearKeyGo').addEventListener('click',clearKeyTry);
+$('#clearKey').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();clearKeyTry();}});
+/* 열쇠 모달 */
+function openKey(target){const m=$('#keyModal');const name=target==='end'?'마을 광장':(CH[target-1]?CH[target-1].place:'다음 장소');$('#keyTitle').textContent=name+' 열쇠 코드';$('#keyDesc').innerHTML='선생님이 알려 주는 <b>열쇠 코드</b>를 입력하면 장소가 열려요.<br>아직이라면 도전 미션을 하며 기다려요!';$('#keyInput').value='';$('#keyMsg').textContent='';$('#keyMsg').className='keymsg';m.hidden=false;setTimeout(()=>$('#keyInput').focus(),50);}
+function keyTry(){const r=tryKey($('#keyInput').value);const msg=$('#keyMsg');if(r.err){msg.className='keymsg';msg.textContent=r.err;return;}msg.className='keymsg ok';msg.textContent='🔓 열렸어요! '+CH[r.id-1].place+'(으)로 출발!';setTimeout(()=>{$('#keyModal').hidden=true;location.hash='ch'+r.id;},700);}
+$('#keyGo').addEventListener('click',keyTry);
+$('#keyInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();keyTry();}});
+$('#keyClose').addEventListener('click',()=>{$('#keyModal').hidden=true;});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#keyModal').hidden)$('#keyModal').hidden=true;});
 $('#clearMap').addEventListener('click',()=>{$('#clearModal').hidden=true;location.hash='map';});
-$('#clearStay').addEventListener('click',()=>{$('#clearModal').hidden=true;toast('마음껏 더 실험해 보세요. 다음 장소는 지도에서 열려 있어요!');});
+$('#clearStay').addEventListener('click',()=>{$('#clearModal').hidden=true;toast('도전 미션을 해 보세요! 다음 장소는 선생님의 열쇠 코드로 열려요.');});
 $('#clearNext').addEventListener('click',()=>{$('#clearModal').hidden=true;location.hash=$('#clearNext').dataset.to;});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#clearModal').hidden)$('#clearModal').hidden=true;});
 
@@ -675,8 +743,9 @@ function refreshGlobal(){
   const cur=currentCh();const n=Object.keys(S.cleared).filter(k=>S.cleared[k]).length;
   const sb=$('#startBtn');if(n===0){sb.textContent='모험 시작하기';sb.href='#ch1';}else if(cur==='end'){sb.textContent='엔딩 다시 보기';sb.href='#ending';}else{sb.textContent=`이어서 하기 · ${CH[cur-1].place}`;sb.href='#ch'+cur;}
   $('#progressNote').textContent=`배지 ${n} / 5`;
-  $('#cards').innerHTML=CH.map(c=>{const ok=unlocked(c.id),done=!!S.cleared[c.id];return `<a class="ccard${ok?'':' locked'}" href="#ch${c.id}" style="--cc:var(--c${c.id})"><div class="por">${CHARS[c.who].svg}</div><div class="k">CHAPTER ${c.id}</div><h3>${c.place}</h3><p>${CHARS[c.who].name} · ${c.desc}</p><div class="st" style="color:${done?'var(--good)':ok?'var(--cc)':'var(--muted)'}">${done?'★ 클리어 · '+c.badge:ok?'▶ 도전 가능':'🔒 이전 장소를 먼저 해결해요'}</div></a>`;}).join('');
+  $('#cards').innerHTML=CH.map(c=>{const ok=unlocked(c.id),done=!!S.cleared[c.id];return `<a class="ccard${ok?'':' locked'}" href="#ch${c.id}" style="--cc:var(--c${c.id})"><div class="por">${CHARS[c.who].svg}</div><div class="k">CHAPTER ${c.id}</div><h3>${c.place}</h3><p>${CHARS[c.who].name} · ${c.desc}</p><div class="st" style="color:${done?'var(--good)':ok?'var(--cc)':'var(--muted)'}">${done?'★ 클리어 · '+c.badge:ok?'▶ 도전 가능':'🔑 선생님의 열쇠 코드로 열려요'}</div></a>`;}).join('');
   $('#teacherMode').checked=!!S.teacher;
+  {const kt=$('#keyTable');if(kt)kt.innerHTML='<tr><th>장소</th><th>열쇠 코드</th></tr>'+Object.keys(KEYS).map(id=>`<tr><td>${id} ${CH[id-1].place}</td><td><b>${KEYS[id]}</b></td></tr>`).join('');}
   if(current==='map')drawMap();
 }
 
@@ -699,7 +768,7 @@ function buildNodes(){const mb=$('#mapboard');mb.querySelectorAll('.node').forEa
     const name=n.id==='end'?'마을 광장':CH[n.id-1].place;const sub=n.id==='end'?'인증서 받기':done?'★ 클리어':ok?CH[n.id-1].concept:'잠김';
     b.innerHTML=nodeIcon(n.id,state)+`<span class="lbl">${n.id==='end'?'':n.id+' '}${name}<small>${sub}</small></span>`;
     b.setAttribute('aria-label',`${name} · ${sub}`);
-    b.addEventListener('click',()=>{if(!ok){toast('아직 잠겨 있어요. 이전 장소의 부탁을 먼저 해결해요!');return;}location.hash=n.id==='end'?'ending':'ch'+n.id;});
+    b.addEventListener('click',()=>{if(!ok){if(n.id==='end')toast('다섯 번째 장소를 해결하면 열려요!');else openKey(n.id);return;}location.hash=n.id==='end'?'ending':'ch'+n.id;});
     mb.appendChild(b);});
 }
 function drawMap(){
@@ -1096,7 +1165,7 @@ selectGuide('hall');
 /* ═════════ 설정 ═════════ */
 $('#teacherMode').addEventListener('change',e=>{S.teacher=e.target.checked;save();refreshGlobal();toast(S.teacher?'선생님 모드: 모든 장소가 열렸어요':'선생님 모드를 껐어요');});
 function openReset(){$('#resetModal').hidden=false;$('#resetNo').focus();}
-function doReset(){S={cleared:{},done:{1:{},2:{},3:{},4:{},5:{}},name:'',teacher:S.teacher};save();$('#certName').value='';CH.forEach(c=>buildMissions(c));sceneStars();
+function doReset(){S={cleared:{},done:{1:{},2:{},3:{},4:{},5:{}},name:'',teacher:S.teacher,keys:{}};save();$('#certName').value='';CH.forEach(c=>buildMissions(c));sceneStars();
   Object.keys(visited).forEach(k=>delete visited[k]);O.touched=false;T.touched=false;G.i=0;G.total=0;G.cur=null;G.over=false;G.seed+=977;R.step=0;R.cache=null;roomUI();
   $('#resetModal').hidden=true;refreshGlobal();if(location.hash==='#map'||!location.hash)show('map');else location.hash='map';toast('처음부터 다시 시작해요! 배지를 모두 모아 보세요');}
 $('#resetBtn').addEventListener('click',openReset);$('#topReset').addEventListener('click',openReset);
@@ -1263,9 +1332,9 @@ let current='map';const visited={};
 let teacherOpen=false;
 function tpUI(){$('#teacherPanel').hidden=!(teacherOpen||S.teacher);}
 function show(id){if(id==='teacher'){teacherOpen=true;id='map';tpUI();setTimeout(()=>$('#teacherPanel').scrollIntoView({behavior:'smooth',block:'start'}),80);}if(!DRAW[id])id='map';
-  if(/^ch\d$/.test(id)&&!unlocked(+id[2])){toast('아직 잠겨 있어요. 이전 장소의 부탁을 먼저 해결해요!');location.replace('#map');id='map';}
+  if(/^ch\d$/.test(id)&&!unlocked(+id[2])){const want=+id[2];location.replace('#'+(current&&current!=='map'&&DRAW[current]?current:'map'));setTimeout(()=>openKey(want),150);return;}
   if(id==='ending'&&!unlocked('end')){toast('다섯 장소를 모두 해결하면 열려요!');location.replace('#map');id='map';}
-  $('#clearModal').hidden=true;current=id;Object.keys(DRAW).forEach(k=>{$('#v-'+k).hidden=k!==id;});window.scrollTo(0,0);
+  $('#clearModal').hidden=true;$('#keyModal').hidden=true;current=id;Object.keys(DRAW).forEach(k=>{$('#v-'+k).hidden=k!==id;});window.scrollTo(0,0);
   requestAnimationFrame(()=>{DRAW[id]();
     if(!visited[id]){visited[id]=1;
       if(/^ch\d$/.test(id)){const n=+id[2],c=CH[n-1];say(n,S.cleared[n]?[[c.who,`다시 왔구나! 이미 ${c.badge}를 받았어. 마음껏 더 실험해 봐.`]]:c.intro,true);if(id==='ch4')playRoom();}
