@@ -662,7 +662,7 @@ let S={cleared:{},done:{1:{},2:{},3:{},4:{},5:{}},name:'',teacher:false,keys:{}}
 try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object.assign(S,o);S.keys=S.keys||{};for(let i=1;i<=5;i++)S.done[i]=S.done[i]||{};}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 /* 열쇠 코드: 선생님이 알려 줄 때만 다음 장소가 열려요 (선생님 모드는 모두 열림) */
-const KEYS={2:'상자',3:'빌딩',4:'화실',5:'탐정'};
+const KEYS={2:'개미눈높이',3:'앞면은네모',4:'소실점두개',5:'세로선똑바로'};
 const CHALL={
  1:['눈높이를 개미 → 사람 → 새로 바꿔 가며 기찻길을 <b>종이에 3장</b> 그려 보기','눈높이 슬라이더를 움직이며 소실점이 <b>어디로 움직이는지</b> 짝에게 설명하기'],
  2:['상자를 <b>5개 이상</b> 추가해 나만의 택배 창고 만들기 (수평선 위·아래에 골고루!)','상자 하나를 골라 <b>종이에 1점 투시로</b> 따라 그려 보기'],
